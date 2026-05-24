@@ -5,12 +5,20 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createTask, updateTask } from '@/services/tasks';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import type { CreateTaskInput, UpdateTaskInput, Task } from '@/types';
+import type { CreateTaskInput, UpdateTaskInput, Task, RecurrenceType } from '@/types';
 
 interface TaskFormProps {
   onClose: () => void;
   editTask?: Task;
 }
+
+const RECURRENCE_LABELS: Record<string, string> = {
+  none: 'No repeat',
+  daily: 'Daily',
+  weekdays: 'Weekdays',
+  weekly: 'Weekly',
+  monthly: 'Monthly',
+};
 
 export function TaskForm({ onClose, editTask }: TaskFormProps) {
   const queryClient = useQueryClient();
@@ -23,6 +31,9 @@ export function TaskForm({ onClose, editTask }: TaskFormProps) {
   const [dueDate, setDueDate] = useState(editTask?.dueDate || '');
   const [tagsInput, setTagsInput] = useState(editTask?.tags?.join(', ') || '');
   const [estimatedMinutes, setEstimatedMinutes] = useState(editTask?.estimatedMinutes?.toString() || '');
+  const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>(editTask?.recurrence?.type || 'none');
+  const [recurrenceInterval, setRecurrenceInterval] = useState(editTask?.recurrence?.interval?.toString() || '1');
+  const [recurrenceEndDate, setRecurrenceEndDate] = useState(editTask?.recurrence?.endDate || '');
 
   const mutation = useMutation({
     mutationFn: async (data: CreateTaskInput | UpdateTaskInput) => {
@@ -51,6 +62,11 @@ export function TaskForm({ onClose, editTask }: TaskFormProps) {
       dueDate: dueDate || undefined,
       tags: tags.length > 0 ? tags : undefined,
       estimatedMinutes: estimatedMinutes ? parseInt(estimatedMinutes, 10) : undefined,
+      recurrence: recurrenceType !== 'none' ? {
+        type: recurrenceType,
+        interval: parseInt(recurrenceInterval, 10) || 1,
+        endDate: recurrenceEndDate || undefined,
+      } : undefined,
     });
   };
 
@@ -125,6 +141,46 @@ export function TaskForm({ onClose, editTask }: TaskFormProps) {
           placeholder="Comma-separated tags, e.g. work, urgent"
         />
       </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">Repeat</label>
+        <div className="grid grid-cols-5 gap-2">
+          {['none', 'daily', 'weekdays', 'weekly', 'monthly'].map((r) => (
+            <button
+              key={r}
+              type="button"
+              onClick={() => setRecurrenceType(r as RecurrenceType)}
+              className={`px-2 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                recurrenceType === r
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {RECURRENCE_LABELS[r]}
+            </button>
+          ))}
+        </div>
+      </div>
+      {recurrenceType !== 'none' && (
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Every</label>
+            <Input
+              type="number"
+              min={1}
+              value={recurrenceInterval}
+              onChange={(e) => setRecurrenceInterval(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">End Date</label>
+            <Input
+              type="date"
+              value={recurrenceEndDate}
+              onChange={(e) => setRecurrenceEndDate(e.target.value)}
+            />
+          </div>
+        </div>
+      )}
       <div className="flex gap-2 pt-2">
         <Button type="submit" variant="gradient" disabled={mutation.isPending}>
           {mutation.isPending ? 'Saving...' : editTask ? 'Update Task' : 'Add Task'}

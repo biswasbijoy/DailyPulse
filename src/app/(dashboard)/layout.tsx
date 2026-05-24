@@ -3,13 +3,14 @@
 import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, ListTodo, History, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, ListTodo, History, BarChart3, Calendar } from 'lucide-react';
 import { useAuth } from '@/store/authContext';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/calendar', label: 'Calendar', icon: Calendar },
   { href: '/tasks', label: 'Daily Tasks', icon: ListTodo },
   { href: '/history', label: 'Task History', icon: History },
   { href: '/analytics', label: 'Analytics', icon: BarChart3 },

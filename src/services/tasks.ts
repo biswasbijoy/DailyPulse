@@ -12,6 +12,28 @@ export async function getTasksByDate(date: string): Promise<Task[]> {
   return res.data.data;
 }
 
+export async function getTasksByRange(start: string, end: string): Promise<Task[]> {
+  const res = await api.get('/tasks/range', { params: { start, end } });
+  return res.data.data;
+}
+
+export interface FilterParams {
+  search?: string;
+  priority?: string;
+  status?: string;
+  category?: string;
+  tags?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  dueDateFrom?: string;
+  dueDateTo?: string;
+}
+
+export async function filterTasks(params: FilterParams): Promise<Task[]> {
+  const res = await api.get('/tasks/filter', { params });
+  return res.data.data;
+}
+
 export async function createTask(data: CreateTaskInput): Promise<Task> {
   const res = await api.post('/tasks', { ...data, taskDate: getLocalDateString() });
   return res.data.data;

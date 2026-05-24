@@ -1,4 +1,4 @@
-import { Task, ITask } from '../models/Task';
+import { Task, ITask, RecurrenceType } from '../models/Task';
 import { AppError } from '../utils/AppError';
 
 interface CreateTaskData {
@@ -10,6 +10,12 @@ interface CreateTaskData {
   tags?: string[];
   estimatedMinutes?: number;
   taskDate: string;
+  recurrence?: {
+    type: RecurrenceType;
+    interval?: number;
+    endDate?: string;
+    daysOfWeek?: number[];
+  };
 }
 
 interface UpdateTaskData {
@@ -22,10 +28,32 @@ interface UpdateTaskData {
   tags?: string[];
   estimatedMinutes?: number;
   actualMinutes?: number;
+  recurrence?: {
+    type: RecurrenceType;
+    interval?: number;
+    endDate?: string;
+    daysOfWeek?: number[];
+  };
+}
+
+interface FilterParams {
+  search?: string;
+  priority?: string;
+  status?: string;
+  category?: string;
+  tags?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  dueDateFrom?: string;
+  dueDateTo?: string;
 }
 
 export class TaskService {
   async create(userId: string, data: CreateTaskData): Promise<ITask> {
+    const recurrence = data.recurrence?.type && data.recurrence.type !== 'none'
+      ? { type: data.recurrence.type, interval: data.recurrence.interval || 1, daysOfWeek: data.recurrence.daysOfWeek || [], endDate: data.recurrence.endDate }
+      : undefined;
+
     const task = await Task.create({
       userId,
       title: data.title,
@@ -37,6 +65,8 @@ export class TaskService {
       dueDate: data.dueDate,
       tags: data.tags || [],
       estimatedMinutes: data.estimatedMinutes,
+      recurrence: recurrence ? { ...recurrence, type: data.recurrence!.type } : { type: 'none', interval: 1, daysOfWeek: [] },
+      isRecurrenceInstance: false,
       history: [{ action: 'created', timestamp: new Date() }],
     });
     return task;
@@ -98,6 +128,31 @@ export class TaskService {
     }
   }
 
+  private computeNextRecurrenceDate(task: ITask): string | null {
+    if (task.recurrence.type === 'none') return null;
+
+    const current = new Date(task.currentDate + 'T00:00:00');
+    const nextDate = new Date(current);
+
+    if (task.recurrence.type === 'daily') {
+      nextDate.setDate(nextDate.getDate() + task.recurrence.interval);
+    } else if (task.recurrence.type === 'weekdays') {
+      nextDate.setDate(nextDate.getDate() + 1);
+      while (nextDate.getDay() === 0 || nextDate.getDay() === 6) {
+        nextDate.setDate(nextDate.getDate() + 1);
+      }
+    } else if (task.recurrence.type === 'weekly') {
+      nextDate.setDate(nextDate.getDate() + (7 * task.recurrence.interval));
+    } else if (task.recurrence.type === 'monthly') {
+      nextDate.setMonth(nextDate.getMonth() + task.recurrence.interval);
+    }
+
+    const nextStr = nextDate.toISOString().split('T')[0];
+    if (task.recurrence.endDate && nextStr > task.recurrence.endDate) return null;
+
+    return nextStr;
+  }
+
   async complete(userId: string, taskId: string): Promise<ITask> {
     const task = await this.getById(userId, taskId);
 
@@ -105,13 +160,37 @@ export class TaskService {
       task.status = 'pending';
       task.completedAt = undefined;
       task.history.push({ action: 'updated', fromDate: 'completed', toDate: 'pending', timestamp: new Date() });
-    } else {
-      task.status = 'completed';
-      task.completedAt = new Date();
-      task.history.push({ action: 'completed', timestamp: new Date() });
+      await task.save();
+      return task;
     }
 
+    task.status = 'completed';
+    task.completedAt = new Date();
+    task.history.push({ action: 'completed', timestamp: new Date() });
     await task.save();
+
+    if (task.recurrence.type !== 'none') {
+      const nextDate = this.computeNextRecurrenceDate(task);
+      if (nextDate) {
+        await Task.create({
+          userId: task.userId,
+          title: task.title,
+          description: task.description,
+          priority: task.priority,
+          category: task.category,
+          taskDate: nextDate,
+          currentDate: nextDate,
+          dueDate: task.dueDate,
+          tags: task.tags,
+          estimatedMinutes: task.estimatedMinutes,
+          recurrence: { ...task.recurrence.toObject() },
+          parentRecurrenceId: task.parentRecurrenceId || task._id,
+          isRecurrenceInstance: true,
+          history: [{ action: 'created', timestamp: new Date() }],
+        });
+      }
+    }
+
     return task;
   }
 
@@ -174,6 +253,15 @@ export class TaskService {
     return this.sortByPriority(tasks);
   }
 
+  async getByRange(userId: string, start: string, end: string): Promise<ITask[]> {
+    const tasks = await Task.find({
+      userId,
+      currentDate: { $gte: start, $lte: end },
+      isDeleted: false,
+    }).sort({ currentDate: 1, priority: -1, createdAt: -1 });
+    return tasks;
+  }
+
   async search(userId: string, query: string): Promise<ITask[]> {
     const tasks = await Task.find({
       userId,
@@ -193,6 +281,35 @@ export class TaskService {
       status,
       isDeleted: false,
     });
+    return this.sortByPriority(tasks);
+  }
+
+  async filter(userId: string, params: FilterParams): Promise<ITask[]> {
+    const query: any = { userId, isDeleted: false };
+
+    if (params.search) {
+      query.$or = [
+        { title: { $regex: params.search, $options: 'i' } },
+        { description: { $regex: params.search, $options: 'i' } },
+        { tags: { $regex: params.search, $options: 'i' } },
+      ];
+    }
+    if (params.priority) query.priority = params.priority;
+    if (params.status) query.status = params.status;
+    if (params.category) query.category = params.category;
+    if (params.tags) query.tags = { $in: params.tags.split(',').map((t) => t.trim()) };
+    if (params.dateFrom || params.dateTo) {
+      query.currentDate = {};
+      if (params.dateFrom) query.currentDate.$gte = params.dateFrom;
+      if (params.dateTo) query.currentDate.$lte = params.dateTo;
+    }
+    if (params.dueDateFrom || params.dueDateTo) {
+      query.dueDate = {};
+      if (params.dueDateFrom) query.dueDate.$gte = params.dueDateFrom;
+      if (params.dueDateTo) query.dueDate.$lte = params.dueDateTo;
+    }
+
+    const tasks = await Task.find(query);
     return this.sortByPriority(tasks);
   }
 }

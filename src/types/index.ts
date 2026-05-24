@@ -2,11 +2,20 @@ export type TaskStatus = 'pending' | 'in_progress' | 'completed' | 'postponed' |
 
 export type TaskPriority = 'low' | 'medium' | 'high';
 
+export type RecurrenceType = 'none' | 'daily' | 'weekly' | 'monthly' | 'weekdays';
+
 export interface TaskHistoryEntry {
   action: 'created' | 'updated' | 'completed' | 'postponed' | 'cancelled' | 'in_progress';
   fromDate?: string;
   toDate?: string;
   timestamp: string;
+}
+
+export interface Recurrence {
+  type: RecurrenceType;
+  interval: number;
+  endDate?: string;
+  daysOfWeek?: number[];
 }
 
 export interface Task {
@@ -27,6 +36,9 @@ export interface Task {
   actualMinutes?: number;
   history: TaskHistoryEntry[];
   isDeleted: boolean;
+  recurrence: Recurrence;
+  parentRecurrenceId?: string;
+  isRecurrenceInstance: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -39,6 +51,7 @@ export interface CreateTaskInput {
   dueDate?: string;
   tags?: string[];
   estimatedMinutes?: number;
+  recurrence?: Recurrence;
 }
 
 export interface UpdateTaskInput {
@@ -51,6 +64,7 @@ export interface UpdateTaskInput {
   tags?: string[];
   estimatedMinutes?: number;
   actualMinutes?: number;
+  recurrence?: Recurrence;
 }
 
 export interface User {

@@ -5,6 +5,8 @@ import { createTaskSchema, updateTaskSchema, postponeTaskSchema } from '../utils
 import {
   getTodayTasks,
   getTasksByDate,
+  getTasksByRange,
+  filterTasks,
   createTask,
   updateTask,
   deleteTask,
@@ -20,6 +22,8 @@ const router = Router();
 router.use(authenticate);
 
 router.get('/today', getTodayTasks);
+router.get('/range', getTasksByRange);
+router.get('/filter', filterTasks);
 router.get('/postponed', getPostponedTasks);
 router.get('/history', getTaskHistory);
 router.get('/date/:date', getTasksByDate);

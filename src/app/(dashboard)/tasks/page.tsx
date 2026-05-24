@@ -1,26 +1,46 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/store/authContext';
-import { getTodayTasks, getPostponedTasks } from '@/services/tasks';
+import { getTodayTasks, getPostponedTasks, filterTasks } from '@/services/tasks';
 import { TaskForm } from '@/components/TaskForm';
 import { TaskList } from '@/components/TaskList';
+import { FilterBar } from '@/components/FilterBar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Task } from '@/types';
+import type { FilterValues } from '@/components/FilterBar';
 
 export default function TasksPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [editTask, setEditTask] = useState<Task | undefined>(undefined);
+  const [filters, setFilters] = useState<FilterValues>({
+    search: '', priority: '', status: '', category: '', dateFrom: '', dateTo: '',
+  });
+
+  const hasActiveFilters = filters.search || filters.priority || filters.status || filters.category || filters.dateFrom || filters.dateTo;
 
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ['tasks', 'today'],
     queryFn: getTodayTasks,
-    enabled: !!user,
+    enabled: !!user && !hasActiveFilters,
+  });
+
+  const { data: filteredTasks = [], isLoading: filterLoading } = useQuery({
+    queryKey: ['tasks', 'filter', filters],
+    queryFn: () => filterTasks({
+      search: filters.search || undefined,
+      priority: filters.priority || undefined,
+      status: filters.status || undefined,
+      category: filters.category || undefined,
+      dateFrom: filters.dateFrom || undefined,
+      dateTo: filters.dateTo || undefined,
+    }),
+    enabled: !!user && !!hasActiveFilters,
   });
 
   const { data: postponedTasks = [], isLoading: postponedLoading } = useQuery({
@@ -28,6 +48,10 @@ export default function TasksPage() {
     queryFn: getPostponedTasks,
     enabled: !!user,
   });
+
+  const handleFilter = useCallback((newFilters: FilterValues) => {
+    setFilters(newFilters);
+  }, []);
 
   if (authLoading) return null;
 
@@ -45,6 +69,9 @@ export default function TasksPage() {
     setShowForm(false);
     setEditTask(undefined);
   };
+
+  const displayTasks = hasActiveFilters ? filteredTasks : tasks;
+  const loading = hasActiveFilters ? filterLoading : isLoading;
 
   return (
     <div className="space-y-6 animate-in stagger-1">
@@ -82,7 +109,9 @@ export default function TasksPage() {
         </Card>
       )}
 
-      {isLoading ? (
+      <FilterBar onFilter={handleFilter} />
+
+      {loading ? (
         <div className="text-gray-400 text-sm">Loading tasks...</div>
       ) : (
         <>
@@ -90,16 +119,16 @@ export default function TasksPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <span className="w-5 h-5 rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-[10px]">T</span>
-                Today&apos;s Tasks
-                <span className="ml-auto text-sm font-normal text-gray-400">{tasks.length} task{tasks.length !== 1 ? 's' : ''}</span>
+                {hasActiveFilters ? 'Filtered Tasks' : 'Today&apos;s Tasks'}
+                <span className="ml-auto text-sm font-normal text-gray-400">{displayTasks.length} task{displayTasks.length !== 1 ? 's' : ''}</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <TaskList tasks={tasks} onEdit={handleEdit} showCheckbox />
+              <TaskList tasks={displayTasks} onEdit={handleEdit} showCheckbox />
             </CardContent>
           </Card>
 
-          {postponedLoading ? (
+          {!hasActiveFilters && (postponedLoading ? (
             <div className="text-gray-400 text-sm">Loading...</div>
           ) : postponedTasks.length > 0 ? (
             <Card className="border-yellow-100">
@@ -114,7 +143,7 @@ export default function TasksPage() {
                 <TaskList tasks={postponedTasks} onEdit={handleEdit} showRevert />
               </CardContent>
             </Card>
-          ) : null}
+          ) : null)}
         </>
       )}
     </div>

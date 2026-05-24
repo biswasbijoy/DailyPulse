@@ -1,16 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/store/authContext';
-import { getTaskHistory, postponeTask, revertPostponeTask } from '@/services/tasks';
+import { getTaskHistory, postponeTask, revertPostponeTask, filterTasks } from '@/services/tasks';
 import { getLocalDateString } from '@/lib/utils';
 import { exportTasksToExcel } from '@/lib/exportToExcel';
+import { FilterBar } from '@/components/FilterBar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { TaskDetails } from '@/components/TaskDetails';
 import type { Task } from '@/types';
+import type { FilterValues } from '@/components/FilterBar';
 
 function StatusIcon({ status }: { status: string }) {
   if (status === 'completed') {
@@ -64,14 +66,38 @@ export default function HistoryPage() {
   const [postponeDate, setPostponeDate] = useState<Record<string, string>>({});
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [exporting, setExporting] = useState(false);
+  const [filters, setFilters] = useState<FilterValues>({
+    search: '', priority: '', status: '', category: '', dateFrom: '', dateTo: '',
+  });
 
+  const hasActiveFilters = filters.search || filters.priority || filters.status || filters.category || filters.dateFrom || filters.dateTo;
   const todayStr = getLocalDateString();
 
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ['tasks', 'history'],
     queryFn: getTaskHistory,
-    enabled: !!user,
+    enabled: !!user && !hasActiveFilters,
   });
+
+  const { data: filteredTasks = [], isLoading: filterLoading } = useQuery({
+    queryKey: ['tasks', 'filter', filters],
+    queryFn: () => filterTasks({
+      search: filters.search || undefined,
+      priority: filters.priority || undefined,
+      status: filters.status || undefined,
+      category: filters.category || undefined,
+      dateFrom: filters.dateFrom || undefined,
+      dateTo: filters.dateTo || undefined,
+    }),
+    enabled: !!user && !!hasActiveFilters,
+  });
+
+  const handleFilter = useCallback((newFilters: FilterValues) => {
+    setFilters(newFilters);
+  }, []);
+
+  const displayTasks = hasActiveFilters ? filteredTasks : tasks;
+  const loading = hasActiveFilters ? filterLoading : isLoading;
 
   const postponeMutation = useMutation({
     mutationFn: ({ id, date }: { id: string; date: string }) => postponeTask(id, date),
@@ -96,7 +122,7 @@ export default function HistoryPage() {
     return null;
   }
 
-  const grouped = tasks.reduce<Record<string, Task[]>>((acc, task) => {
+  const grouped = displayTasks.reduce<Record<string, Task[]>>((acc, task) => {
     const date = task.currentDate;
     if (!acc[date]) acc[date] = [];
     acc[date].push(task);
@@ -108,7 +134,7 @@ export default function HistoryPage() {
   const handleExport = async () => {
     setExporting(true);
     try {
-      await exportTasksToExcel(tasks);
+      await exportTasksToExcel(displayTasks);
     } catch (err) {
       console.error('Export failed:', err);
     } finally {
@@ -135,15 +161,17 @@ export default function HistoryPage() {
         <Button
           variant="gradient"
           onClick={handleExport}
-          disabled={exporting || tasks.length === 0}
+          disabled={exporting || displayTasks.length === 0}
         >
           {exporting ? 'Exporting...' : 'Export to Excel'}
         </Button>
       </div>
 
-      {isLoading ? (
+      <FilterBar onFilter={handleFilter} showDateFilter />
+
+      {loading ? (
         <div className="text-gray-400 text-sm">Loading history...</div>
-      ) : sortedDates.length === 0 ? (
+      ) : displayTasks.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
             <div className="mb-3 flex justify-center">
