@@ -33,8 +33,13 @@ export interface ITask extends Document {
   tags: string[];
   estimatedMinutes?: number;
   actualMinutes?: number;
+  timerStartedAt?: Date;
+  reminderAt?: Date;
+  projectId?: mongoose.Types.ObjectId;
+  templateFromId?: mongoose.Types.ObjectId;
   history: ITaskHistory[];
   isDeleted: boolean;
+  deletedAt?: Date;
   recurrence: IRecurrence;
   parentRecurrenceId?: mongoose.Types.ObjectId;
   isRecurrenceInstance: boolean;
@@ -90,8 +95,13 @@ const taskSchema = new Schema<ITask>(
     tags: [{ type: String, trim: true }],
     estimatedMinutes: { type: Number },
     actualMinutes: { type: Number },
+    timerStartedAt: { type: Date },
+    reminderAt: { type: Date },
+    projectId: { type: Schema.Types.ObjectId, ref: 'Project' },
+    templateFromId: { type: Schema.Types.ObjectId, ref: 'TaskTemplate' },
     history: [taskHistorySchema],
     isDeleted: { type: Boolean, default: false },
+    deletedAt: { type: Date },
     recurrence: { type: recurrenceSchema, default: () => ({ type: 'none', interval: 1, daysOfWeek: [] }) },
     parentRecurrenceId: { type: Schema.Types.ObjectId, ref: 'Task' },
     isRecurrenceInstance: { type: Boolean, default: false },
@@ -104,5 +114,7 @@ taskSchema.index({ userId: 1, status: 1 });
 taskSchema.index({ userId: 1, createdAt: -1 });
 taskSchema.index({ userId: 1, 'recurrence.type': 1 });
 taskSchema.index({ userId: 1, parentRecurrenceId: 1 });
+taskSchema.index({ userId: 1, isDeleted: 1, deletedAt: -1 });
+taskSchema.index({ userId: 1, projectId: 1 });
 
 export const Task = mongoose.model<ITask>('Task', taskSchema);

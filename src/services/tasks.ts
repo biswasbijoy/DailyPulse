@@ -27,6 +27,7 @@ export interface FilterParams {
   dateTo?: string;
   dueDateFrom?: string;
   dueDateTo?: string;
+  projectId?: string;
 }
 
 export async function filterTasks(params: FilterParams): Promise<Task[]> {
@@ -46,6 +47,30 @@ export async function updateTask(id: string, data: UpdateTaskInput): Promise<Tas
 
 export async function deleteTask(id: string): Promise<void> {
   await api.delete(`/tasks/${id}`);
+}
+
+export async function restoreTask(id: string): Promise<Task> {
+  const res = await api.patch(`/tasks/${id}/restore`);
+  return res.data.data;
+}
+
+export async function permanentDeleteTask(id: string): Promise<void> {
+  await api.delete(`/tasks/${id}/permanent`);
+}
+
+export async function getTrashTasks(): Promise<Task[]> {
+  const res = await api.get('/tasks/trash');
+  return res.data.data;
+}
+
+export async function startTimer(id: string): Promise<Task> {
+  const res = await api.post(`/tasks/${id}/timer/start`);
+  return res.data.data;
+}
+
+export async function stopTimer(id: string): Promise<Task> {
+  const res = await api.post(`/tasks/${id}/timer/stop`);
+  return res.data.data;
 }
 
 export async function completeTask(id: string): Promise<Task> {

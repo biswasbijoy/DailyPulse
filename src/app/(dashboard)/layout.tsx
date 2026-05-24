@@ -3,7 +3,7 @@
 import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, ListTodo, History, BarChart3, Calendar } from 'lucide-react';
+import { LayoutDashboard, ListTodo, History, BarChart3, Calendar, Trash2, FolderKanban, Settings } from 'lucide-react';
 import { useAuth } from '@/store/authContext';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -12,8 +12,11 @@ const navItems = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/calendar', label: 'Calendar', icon: Calendar },
   { href: '/tasks', label: 'Daily Tasks', icon: ListTodo },
+  { href: '/projects', label: 'Projects', icon: FolderKanban },
   { href: '/history', label: 'Task History', icon: History },
   { href: '/analytics', label: 'Analytics', icon: BarChart3 },
+  { href: '/trash', label: 'Trash', icon: Trash2 },
+  { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {

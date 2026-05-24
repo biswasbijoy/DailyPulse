@@ -34,8 +34,33 @@ export const updateTask = asyncHandler(async (req: AuthRequest, res: Response) =
 });
 
 export const deleteTask = asyncHandler(async (req: AuthRequest, res: Response) => {
-  await taskService.hardDelete(req.userId!, req.params.id);
-  return sendSuccess(res, null, 'Task deleted');
+  await taskService.softDelete(req.userId!, req.params.id);
+  return sendSuccess(res, null, 'Task moved to trash');
+});
+
+export const restoreTask = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const task = await taskService.restore(req.userId!, req.params.id);
+  return sendSuccess(res, task, 'Task restored');
+});
+
+export const permanentDeleteTask = asyncHandler(async (req: AuthRequest, res: Response) => {
+  await taskService.permanentDelete(req.userId!, req.params.id);
+  return sendSuccess(res, null, 'Task permanently deleted');
+});
+
+export const getTrashTasks = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const tasks = await taskService.getTrash(req.userId!);
+  return sendSuccess(res, tasks);
+});
+
+export const startTimer = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const task = await taskService.startTimer(req.userId!, req.params.id);
+  return sendSuccess(res, task, 'Timer started');
+});
+
+export const stopTimer = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const task = await taskService.stopTimer(req.userId!, req.params.id);
+  return sendSuccess(res, task, 'Timer stopped');
 });
 
 export const completeTask = asyncHandler(async (req: AuthRequest, res: Response) => {

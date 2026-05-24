@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createTask, updateTask } from '@/services/tasks';
+import { getProjects } from '@/services/projects';
+import { getTemplates, createTemplate, applyTemplate } from '@/services/templates';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import type { CreateTaskInput, UpdateTaskInput, Task, RecurrenceType } from '@/types';
+import type { CreateTaskInput, UpdateTaskInput, Task, RecurrenceType, Project } from '@/types';
 
 interface TaskFormProps {
   onClose: () => void;
@@ -34,6 +36,19 @@ export function TaskForm({ onClose, editTask }: TaskFormProps) {
   const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>(editTask?.recurrence?.type || 'none');
   const [recurrenceInterval, setRecurrenceInterval] = useState(editTask?.recurrence?.interval?.toString() || '1');
   const [recurrenceEndDate, setRecurrenceEndDate] = useState(editTask?.recurrence?.endDate || '');
+  const [projectId, setProjectId] = useState(editTask?.projectId || '');
+  const [reminderAt, setReminderAt] = useState(editTask?.reminderAt ? new Date(editTask.reminderAt).toISOString().slice(0, 16) : '');
+  const [templateName, setTemplateName] = useState('');
+
+  const { data: projects = [] } = useQuery({
+    queryKey: ['projects'],
+    queryFn: getProjects,
+  });
+
+  const { data: templates = [] } = useQuery({
+    queryKey: ['templates'],
+    queryFn: getTemplates,
+  });
 
   const mutation = useMutation({
     mutationFn: async (data: CreateTaskInput | UpdateTaskInput) => {
@@ -45,6 +60,44 @@ export function TaskForm({ onClose, editTask }: TaskFormProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       onClose();
+    },
+  });
+
+  const saveTemplateMutation = useMutation({
+    mutationFn: () => createTemplate({
+      name: templateName,
+      title,
+      description: description || undefined,
+      priority,
+      category: category || undefined,
+      tags: tagsInput.split(',').map((t) => t.trim()).filter(Boolean),
+      estimatedMinutes: estimatedMinutes ? parseInt(estimatedMinutes, 10) : undefined,
+      recurrenceType,
+      recurrenceInterval: parseInt(recurrenceInterval, 10) || 1,
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['templates'] });
+      setTemplateName('');
+    },
+  });
+
+  const applyTemplateMutation = useMutation({
+    mutationFn: async (templateId: string) => {
+      const date = editTask?.currentDate || new Date().toISOString().slice(0, 10);
+      const result = await applyTemplate(templateId, date);
+      return result;
+    },
+    onSuccess: (result: any) => {
+      if (result) {
+        setTitle(result.title || '');
+        setDescription(result.description || '');
+        setPriority(result.priority || 'medium');
+        setCategory(result.category || '');
+        setTagsInput(result.tags?.join(', ') || '');
+        setEstimatedMinutes(result.estimatedMinutes?.toString() || '');
+        setRecurrenceType(result.recurrence?.type || 'none');
+        setRecurrenceInterval(result.recurrence?.interval?.toString() || '1');
+      }
     },
   });
 
@@ -62,6 +115,8 @@ export function TaskForm({ onClose, editTask }: TaskFormProps) {
       dueDate: dueDate || undefined,
       tags: tags.length > 0 ? tags : undefined,
       estimatedMinutes: estimatedMinutes ? parseInt(estimatedMinutes, 10) : undefined,
+      projectId: projectId || undefined,
+      reminderAt: reminderAt ? new Date(reminderAt).toISOString() : undefined,
       recurrence: recurrenceType !== 'none' ? {
         type: recurrenceType,
         interval: parseInt(recurrenceInterval, 10) || 1,
@@ -181,6 +236,63 @@ export function TaskForm({ onClose, editTask }: TaskFormProps) {
           </div>
         </div>
       )}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">Project</label>
+        <select
+          value={projectId}
+          onChange={(e) => setProjectId(e.target.value)}
+          className="flex h-10 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option value="">No project</option>
+          {projects.map((p: Project) => (
+            <option key={p._id} value={p._id}>{p.name}</option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">Reminder</label>
+        <Input
+          type="datetime-local"
+          value={reminderAt}
+          onChange={(e) => setReminderAt(e.target.value)}
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">Load from Template</label>
+        <div className="flex gap-2">
+          <select
+            value=""
+            onChange={(e) => {
+              if (e.target.value) applyTemplateMutation.mutate(e.target.value);
+            }}
+            className="flex h-10 flex-1 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Select template...</option>
+            {templates.map((t: any) => (
+              <option key={t._id} value={t._id}>{t.name}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">Save as Template</label>
+        <div className="flex gap-2">
+          <Input
+            value={templateName}
+            onChange={(e) => setTemplateName(e.target.value)}
+            placeholder="Template name"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => templateName && saveTemplateMutation.mutate()}
+            disabled={!templateName || saveTemplateMutation.isPending}
+          >
+            Save
+          </Button>
+        </div>
+      </div>
       <div className="flex gap-2 pt-2">
         <Button type="submit" variant="gradient" disabled={mutation.isPending}>
           {mutation.isPending ? 'Saving...' : editTask ? 'Update Task' : 'Add Task'}

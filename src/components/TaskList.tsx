@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { completeTask, postponeTask, revertPostponeTask, deleteTask } from '@/services/tasks';
+import { completeTask, postponeTask, revertPostponeTask, deleteTask, startTimer, stopTimer } from '@/services/tasks';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
@@ -70,6 +70,16 @@ export function TaskList({ tasks, onEdit, showRevert, showCheckbox }: TaskListPr
 
   const completeMutation = useMutation({
     mutationFn: (id: string) => completeTask(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+  });
+
+  const timerStartMutation = useMutation({
+    mutationFn: (id: string) => startTimer(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+  });
+
+  const timerStopMutation = useMutation({
+    mutationFn: (id: string) => stopTimer(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
   });
 
@@ -218,6 +228,20 @@ export function TaskList({ tasks, onEdit, showRevert, showCheckbox }: TaskListPr
                       Reschedule
                     </Button>
                   </>
+                )}
+                {!isCompleted && task.status !== 'postponed' && (
+                  <Button
+                    size="sm"
+                    variant={task.timerStartedAt ? 'default' : 'outline'}
+                    disabled={timerStartMutation.isPending || timerStopMutation.isPending}
+                    onClick={() =>
+                      task.timerStartedAt
+                        ? timerStopMutation.mutate(task._id)
+                        : timerStartMutation.mutate(task._id)
+                    }
+                  >
+                    {task.timerStartedAt ? 'Stop' : 'Timer'}
+                  </Button>
                 )}
                 <Button size="sm" variant="ghost" onClick={() => onEdit(task)}>
                   Edit

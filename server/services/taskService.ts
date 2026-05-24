@@ -121,11 +121,62 @@ export class TaskService {
     return task;
   }
 
-  async hardDelete(userId: string, taskId: string): Promise<void> {
+  async softDelete(userId: string, taskId: string): Promise<void> {
+    const task = await this.getById(userId, taskId);
+    task.isDeleted = true;
+    task.deletedAt = new Date();
+    task.history.push({ action: 'cancelled', timestamp: new Date() });
+    await task.save();
+  }
+
+  async restore(userId: string, taskId: string): Promise<ITask> {
+    const task = await Task.findOne({ _id: taskId, userId, isDeleted: true });
+    if (!task) {
+      throw new AppError('Task not found in trash', 404);
+    }
+    task.isDeleted = false;
+    task.deletedAt = undefined;
+    task.history.push({ action: 'updated', timestamp: new Date() });
+    await task.save();
+    return task;
+  }
+
+  async permanentDelete(userId: string, taskId: string): Promise<void> {
     const result = await Task.deleteOne({ _id: taskId, userId });
     if (result.deletedCount === 0) {
       throw new AppError('Task not found', 404);
     }
+  }
+
+  async getTrash(userId: string): Promise<ITask[]> {
+    const tasks = await Task.find({
+      userId,
+      isDeleted: true,
+    }).sort({ deletedAt: -1 });
+    return this.sortByPriority(tasks);
+  }
+
+  async startTimer(userId: string, taskId: string): Promise<ITask> {
+    const task = await this.getById(userId, taskId);
+    task.timerStartedAt = new Date();
+    task.status = 'in_progress';
+    task.history.push({ action: 'in_progress', timestamp: new Date() });
+    await task.save();
+    return task;
+  }
+
+  async stopTimer(userId: string, taskId: string): Promise<ITask> {
+    const task = await this.getById(userId, taskId);
+    if (!task.timerStartedAt) {
+      throw new AppError('Timer was not running', 400);
+    }
+    const elapsedMs = Date.now() - task.timerStartedAt.getTime();
+    const elapsedMinutes = Math.round(elapsedMs / 60000);
+    task.actualMinutes = (task.actualMinutes || 0) + elapsedMinutes;
+    task.timerStartedAt = undefined;
+    task.history.push({ action: 'updated', timestamp: new Date() });
+    await task.save();
+    return task;
   }
 
   private computeNextRecurrenceDate(task: ITask): string | null {
@@ -183,7 +234,7 @@ export class TaskService {
           dueDate: task.dueDate,
           tags: task.tags,
           estimatedMinutes: task.estimatedMinutes,
-          recurrence: { ...task.recurrence.toObject() },
+          recurrence: { ...task.recurrence } as any,
           parentRecurrenceId: task.parentRecurrenceId || task._id,
           isRecurrenceInstance: true,
           history: [{ action: 'created', timestamp: new Date() }],
