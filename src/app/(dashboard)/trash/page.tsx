@@ -59,17 +59,17 @@ export default function TrashPage() {
         </div>
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-gray-900">Trash</h1>
-          <p className="text-gray-500 mt-1">Deleted tasks can be restored or permanently removed</p>
+          <p className="text-muted-foreground mt-1">Deleted tasks can be restored or permanently removed</p>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="text-gray-400 text-sm">Loading...</div>
+        <div className="text-muted-foreground text-sm">Loading...</div>
       ) : tasks.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
             <Trash2 className="w-10 h-10 mx-auto mb-3 text-gray-300" />
-            <p className="text-gray-400 text-sm">Trash is empty.</p>
+            <p className="text-muted-foreground text-sm">Trash is empty.</p>
           </CardContent>
         </Card>
       ) : (
@@ -89,7 +89,7 @@ export default function TrashPage() {
                         {config.label}
                       </span>
                       {task.category && (
-                        <span className="text-[11px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                        <span className="text-[11px] text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
                           {task.category}
                         </span>
                       )}

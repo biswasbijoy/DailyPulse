@@ -54,7 +54,7 @@ export function FilterBar({ onFilter, showDateFilter }: FilterBarProps) {
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleApply()}
             placeholder="Search tasks..."
-            className="w-full h-10 pl-9 pr-3 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            className="w-full h-10 pl-9 pr-3 rounded-xl border border-input bg-background text-sm text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring transition-all"
           />
         </div>
         <Button variant="outline" size="sm" onClick={() => setOpen(!open)}>
@@ -72,11 +72,11 @@ export function FilterBar({ onFilter, showDateFilter }: FilterBarProps) {
       {open && (
         <div className="flex flex-wrap gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
           <div className="flex-1 min-w-[140px]">
-            <label className="block text-xs font-medium text-gray-500 mb-1">Priority</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">Priority</label>
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
-              className="w-full h-9 rounded-lg border border-gray-200 bg-white px-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-9 rounded-lg border border-input bg-background px-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <option value="">All</option>
               <option value="high">High</option>
@@ -85,11 +85,11 @@ export function FilterBar({ onFilter, showDateFilter }: FilterBarProps) {
             </select>
           </div>
           <div className="flex-1 min-w-[140px]">
-            <label className="block text-xs font-medium text-gray-500 mb-1">Status</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">Status</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="w-full h-9 rounded-lg border border-gray-200 bg-white px-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-9 rounded-lg border border-input bg-background px-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <option value="">All</option>
               <option value="pending">Pending</option>
@@ -100,32 +100,32 @@ export function FilterBar({ onFilter, showDateFilter }: FilterBarProps) {
             </select>
           </div>
           <div className="flex-1 min-w-[140px]">
-            <label className="block text-xs font-medium text-gray-500 mb-1">Category</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">Category</label>
             <input
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               placeholder="e.g. Work"
-              className="w-full h-9 rounded-lg border border-gray-200 bg-white px-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-9 rounded-lg border border-input bg-background px-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
           {showDateFilter && (
             <>
               <div className="flex-1 min-w-[140px]">
-                <label className="block text-xs font-medium text-gray-500 mb-1">From</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">From</label>
                 <input
                   type="date"
                   value={dateFrom}
                   onChange={(e) => setDateFrom(e.target.value)}
-                  className="w-full h-9 rounded-lg border border-gray-200 bg-white px-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full h-9 rounded-lg border border-input bg-background px-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
               <div className="flex-1 min-w-[140px]">
-                <label className="block text-xs font-medium text-gray-500 mb-1">To</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">To</label>
                 <input
                   type="date"
                   value={dateTo}
                   onChange={(e) => setDateTo(e.target.value)}
-                  className="w-full h-9 rounded-lg border border-gray-200 bg-white px-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full h-9 rounded-lg border border-input bg-background px-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
             </>

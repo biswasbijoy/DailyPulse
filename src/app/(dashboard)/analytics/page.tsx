@@ -57,9 +57,9 @@ export default function AnalyticsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-gray-900">Analytics</h1>
-          <p className="text-gray-500 mt-1">Track your productivity</p>
+          <p className="text-muted-foreground mt-1">Track your productivity</p>
         </div>
-        <div className="flex gap-1 bg-gray-100 p-1 rounded-xl">
+        <div className="flex gap-1 bg-secondary p-1 rounded-xl">
           {periods.map((p) => (
             <button
               key={p}
@@ -67,7 +67,7 @@ export default function AnalyticsPage() {
               className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 ${
                 period === p
                   ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -77,7 +77,7 @@ export default function AnalyticsPage() {
       </div>
 
       {isLoading ? (
-        <div className="text-gray-400 text-sm">Loading analytics...</div>
+        <div className="text-muted-foreground text-sm">Loading analytics...</div>
       ) : summary ? (
         <>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -112,15 +112,15 @@ export default function AnalyticsPage() {
             <Card>
               <CardContent className="p-5">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-gray-500" />
+                  <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400 font-medium">Pending</p>
+                    <p className="text-xs text-muted-foreground font-medium">Pending</p>
                     <p className="text-2xl font-bold text-gray-900">{summary.pendingTasks}</p>
                   </div>
                 </div>
-                <div className="w-full bg-gray-100 rounded-full h-1.5">
+                <div className="w-full bg-secondary rounded-full h-1.5">
                   <div className="bg-gray-400 h-1.5 rounded-full" style={{ width: `${summary.totalTasks ? Math.round((summary.pendingTasks / summary.totalTasks) * 100) : 0}%` }} />
                 </div>
               </CardContent>
@@ -132,7 +132,7 @@ export default function AnalyticsPage() {
                     <RotateCcw className="w-5 h-5 text-yellow-500" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400 font-medium">Rescheduled</p>
+                    <p className="text-xs text-muted-foreground font-medium">Rescheduled</p>
                     <p className="text-2xl font-bold text-yellow-600">{summary.postponedTasks}</p>
                   </div>
                 </div>
@@ -148,7 +148,7 @@ export default function AnalyticsPage() {
                     <Trophy className="w-5 h-5 text-blue-500" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400 font-medium">Productivity Score</p>
+                    <p className="text-xs text-muted-foreground font-medium">Productivity Score</p>
                     <p className="text-2xl font-bold text-blue-600">{summary.productivityScore}</p>
                   </div>
                 </div>
@@ -261,9 +261,9 @@ export default function AnalyticsPage() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-4 gap-4">
-                  <div className="text-center p-4 rounded-xl bg-gray-50">
+                  <div className="text-center p-4 rounded-xl bg-muted/50">
                     <p className="text-2xl font-bold text-gray-900">{data.estimationAccuracy.total}</p>
-                    <p className="text-xs text-gray-400 mt-1">Tracked Tasks</p>
+                    <p className="text-xs text-muted-foreground mt-1">Tracked Tasks</p>
                   </div>
                   <div className="text-center p-4 rounded-xl bg-emerald-50">
                     <p className="text-2xl font-bold text-emerald-600">{data.estimationAccuracy.matched}</p>

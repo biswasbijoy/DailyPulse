@@ -42,7 +42,7 @@ export default function RegisterPage() {
             D
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Create account</h1>
-          <p className="text-gray-500 mt-1">Get started with DailyPulse</p>
+          <p className="text-muted-foreground mt-1">Get started with DailyPulse</p>
         </div>
 
         <div className="bg-white/70 backdrop-blur-xl rounded-2xl border border-white/50 shadow-xl shadow-gray-200/50 p-8">
@@ -53,7 +53,7 @@ export default function RegisterPage() {
               </div>
             )}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Name</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Name</label>
               <Input
                 placeholder="Your name"
                 value={name}
@@ -62,7 +62,7 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
               <Input
                 type="email"
                 placeholder="you@example.com"
@@ -72,7 +72,7 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Password</label>
               <Input
                 type="password"
                 placeholder="••••••••"
@@ -86,7 +86,7 @@ export default function RegisterPage() {
               {loading ? 'Creating account...' : 'Create account'}
             </Button>
           </form>
-          <p className="mt-5 text-center text-sm text-gray-500">
+          <p className="mt-5 text-center text-sm text-muted-foreground">
             Already have an account?{' '}
             <Link href="/login" className="text-blue-600 font-medium hover:text-blue-700 transition-colors">
               Sign in

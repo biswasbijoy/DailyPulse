@@ -215,7 +215,7 @@ export function TaskList({ tasks, onEdit, showRevert, showCheckbox }: TaskListPr
                       onChange={(e) =>
                         setPostponeDate((prev) => ({ ...prev, [task._id]: e.target.value }))
                       }
-                      className="h-8 w-[120px] rounded-lg border border-gray-200 bg-white px-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="h-8 w-[120px] rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <Button
                       size="sm"

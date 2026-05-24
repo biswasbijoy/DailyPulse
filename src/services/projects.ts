@@ -3,7 +3,7 @@ import type { Project } from '@/types';
 
 export async function getProjects(): Promise<Project[]> {
   const res = await api.get('/projects');
-  return res.data.data;
+  return res.data.data.projects;
 }
 
 export async function createProject(data: { name: string; description?: string; color?: string }): Promise<Project> {

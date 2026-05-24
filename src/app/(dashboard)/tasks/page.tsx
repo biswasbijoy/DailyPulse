@@ -78,7 +78,7 @@ export default function TasksPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-gray-900">Daily Tasks</h1>
-          <p className="text-gray-500 mt-1">
+          <p className="text-muted-foreground mt-1">
             {new Date().toLocaleDateString('en-US', {
               weekday: 'long',
               year: 'numeric',
@@ -112,7 +112,7 @@ export default function TasksPage() {
       <FilterBar onFilter={handleFilter} />
 
       {loading ? (
-        <div className="text-gray-400 text-sm">Loading tasks...</div>
+        <div className="text-muted-foreground text-sm">Loading tasks...</div>
       ) : (
         <>
           <Card>
@@ -120,7 +120,7 @@ export default function TasksPage() {
               <CardTitle className="flex items-center gap-2">
                 <span className="w-5 h-5 rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-[10px]">T</span>
                 {hasActiveFilters ? 'Filtered Tasks' : "Today's Tasks"}
-                <span className="ml-auto text-sm font-normal text-gray-400">{displayTasks.length} task{displayTasks.length !== 1 ? 's' : ''}</span>
+                <span className="ml-auto text-sm font-normal text-muted-foreground">{displayTasks.length} task{displayTasks.length !== 1 ? 's' : ''}</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -129,7 +129,7 @@ export default function TasksPage() {
           </Card>
 
           {!hasActiveFilters && (postponedLoading ? (
-            <div className="text-gray-400 text-sm">Loading...</div>
+            <div className="text-muted-foreground text-sm">Loading...</div>
           ) : postponedTasks.length > 0 ? (
             <Card className="border-yellow-100">
               <CardHeader>

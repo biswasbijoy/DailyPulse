@@ -41,7 +41,7 @@ export default function LoginPage() {
             D
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
-          <p className="text-gray-500 mt-1">Sign in to DailyPulse</p>
+          <p className="text-muted-foreground mt-1">Sign in to DailyPulse</p>
         </div>
 
         <div className="bg-white/70 backdrop-blur-xl rounded-2xl border border-white/50 shadow-xl shadow-gray-200/50 p-8">
@@ -52,7 +52,7 @@ export default function LoginPage() {
               </div>
             )}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
               <Input
                 type="email"
                 placeholder="you@example.com"
@@ -62,7 +62,7 @@ export default function LoginPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Password</label>
               <Input
                 type="password"
                 placeholder="••••••••"
@@ -75,7 +75,7 @@ export default function LoginPage() {
               {loading ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
-          <p className="mt-5 text-center text-sm text-gray-500">
+          <p className="mt-5 text-center text-sm text-muted-foreground">
             Don't have an account?{' '}
             <Link href="/register" className="text-blue-600 font-medium hover:text-blue-700 transition-colors">
               Register

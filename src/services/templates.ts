@@ -3,7 +3,7 @@ import type { TaskTemplate, CreateTaskInput } from '@/types';
 
 export async function getTemplates(): Promise<TaskTemplate[]> {
   const res = await api.get('/templates');
-  return res.data.data;
+  return res.data.data.templates;
 }
 
 export async function createTemplate(data: { name: string; title: string; description?: string; priority?: string; category?: string; dueDateOffset?: number; tags?: string[]; estimatedMinutes?: number; recurrenceType?: string; recurrenceInterval?: number }): Promise<TaskTemplate> {

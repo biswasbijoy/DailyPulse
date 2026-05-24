@@ -55,7 +55,7 @@ export default function ProjectsPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
-            <p className="text-sm text-gray-500">Organize tasks into projects</p>
+            <p className="text-sm text-muted-foreground">Organize tasks into projects</p>
           </div>
         </div>
         <Button variant="gradient" size="sm" onClick={() => setShowForm(!showForm)}>
@@ -75,11 +75,11 @@ export default function ProjectsPage() {
               className="space-y-4"
             >
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Project Name</label>
+                <label className="block text-sm font-medium text-foreground mb-1.5">Project Name</label>
                 <Input value={name} onChange={(e) => setName(e.target.value)} required placeholder="e.g. Work, Side Project" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
+                <label className="block text-sm font-medium text-foreground mb-1.5">Description</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -89,7 +89,7 @@ export default function ProjectsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Color</label>
+                <label className="block text-sm font-medium text-foreground mb-1.5">Color</label>
                 <Input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="h-10 w-20 p-1" />
               </div>
               <div className="flex gap-2">
@@ -104,11 +104,11 @@ export default function ProjectsPage() {
       )}
 
       {isLoading ? (
-        <p className="text-gray-500 text-center py-8">Loading projects...</p>
+        <p className="text-muted-foreground text-center py-8">Loading projects...</p>
       ) : projects.length === 0 ? (
         <div className="text-center py-12">
           <FolderKanban className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-          <p className="text-gray-500">No projects yet. Create your first project!</p>
+          <p className="text-muted-foreground">No projects yet. Create your first project!</p>
         </div>
       ) : (
         <div className="grid gap-4">
@@ -123,24 +123,24 @@ export default function ProjectsPage() {
                   <div>
                     <h3 className="font-medium text-gray-900">{project.name}</h3>
                     {project.description && (
-                      <p className="text-sm text-gray-500">{project.description}</p>
+                      <p className="text-sm text-muted-foreground">{project.description}</p>
                     )}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   {project.archived && (
-                    <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-lg">Archived</span>
+                    <span className="text-xs text-muted-foreground bg-secondary px-2 py-1 rounded-lg">Archived</span>
                   )}
                   <button
                     onClick={() => updateMutation.mutate({ id: project._id, data: { archived: !project.archived } })}
-                    className="p-2 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-all"
+                    className="p-2 text-muted-foreground hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-all"
                     title={project.archived ? 'Unarchive' : 'Archive'}
                   >
                     <Archive className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => deleteMutation.mutate(project._id)}
-                    className="p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-all"
+                    className="p-2 text-muted-foreground hover:text-red-600 rounded-lg hover:bg-red-50 transition-all"
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4" />
