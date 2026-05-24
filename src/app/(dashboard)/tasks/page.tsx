@@ -119,7 +119,7 @@ export default function TasksPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <span className="w-5 h-5 rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-[10px]">T</span>
-                {hasActiveFilters ? 'Filtered Tasks' : 'Today&apos;s Tasks'}
+                {hasActiveFilters ? 'Filtered Tasks' : "Today's Tasks"}
                 <span className="ml-auto text-sm font-normal text-gray-400">{displayTasks.length} task{displayTasks.length !== 1 ? 's' : ''}</span>
               </CardTitle>
             </CardHeader>

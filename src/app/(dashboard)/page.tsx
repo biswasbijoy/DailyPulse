@@ -64,7 +64,7 @@ export default function DashboardPage() {
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 animate-in stagger-2">
         <StatCard
-          label="Today&apos;s Tasks"
+          label="Today's Tasks"
           value={tasks.length}
           icon={ClipboardList}
           gradient="bg-gradient-to-br from-blue-500 to-indigo-600"
@@ -96,7 +96,7 @@ export default function DashboardPage() {
       <Card className="animate-in stagger-3">
         <CardContent className="p-0">
           <div className="px-5 py-4 border-b border-gray-50">
-            <h3 className="font-semibold text-gray-900">Today&apos;s Overview</h3>
+            <h3 className="font-semibold text-gray-900">Today's Overview</h3>
           </div>
           {isLoading ? (
             <div className="p-5 text-gray-400 text-sm">Loading...</div>
