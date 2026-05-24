@@ -55,6 +55,17 @@ export const revertPostponeTask = asyncHandler(async (req: AuthRequest, res: Res
   return sendSuccess(res, task, 'Task reverted to today');
 });
 
+export const getTasksByRange = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const { start, end } = req.query as { start: string; end: string };
+  const tasks = await taskService.getByRange(req.userId!, start, end);
+  return sendSuccess(res, tasks);
+});
+
+export const filterTasks = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const tasks = await taskService.filter(req.userId!, req.query as any);
+  return sendSuccess(res, tasks);
+});
+
 export const getPostponedTasks = asyncHandler(async (req: AuthRequest, res: Response) => {
   const tasks = await taskService.getPostponed(req.userId!);
   return sendSuccess(res, tasks);

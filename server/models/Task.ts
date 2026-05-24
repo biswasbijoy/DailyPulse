@@ -2,12 +2,20 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export type TaskStatus = 'pending' | 'in_progress' | 'completed' | 'postponed' | 'cancelled';
 export type TaskPriority = 'low' | 'medium' | 'high';
+export type RecurrenceType = 'none' | 'daily' | 'weekly' | 'monthly' | 'weekdays';
 
 export interface ITaskHistory {
   action: 'created' | 'updated' | 'completed' | 'postponed' | 'cancelled' | 'in_progress' | 'reverted';
   fromDate?: string;
   toDate?: string;
   timestamp: Date;
+}
+
+export interface IRecurrence {
+  type: RecurrenceType;
+  interval: number;
+  endDate?: string;
+  daysOfWeek?: number[];
 }
 
 export interface ITask extends Document {
@@ -27,6 +35,9 @@ export interface ITask extends Document {
   actualMinutes?: number;
   history: ITaskHistory[];
   isDeleted: boolean;
+  recurrence: IRecurrence;
+  parentRecurrenceId?: mongoose.Types.ObjectId;
+  isRecurrenceInstance: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -41,6 +52,16 @@ const taskHistorySchema = new Schema<ITaskHistory>(
     fromDate: { type: String },
     toDate: { type: String },
     timestamp: { type: Date, default: Date.now },
+  },
+  { _id: false }
+);
+
+const recurrenceSchema = new Schema<IRecurrence>(
+  {
+    type: { type: String, enum: ['none', 'daily', 'weekly', 'monthly', 'weekdays'], default: 'none' },
+    interval: { type: Number, default: 1, min: 1 },
+    endDate: { type: String },
+    daysOfWeek: [{ type: Number, min: 0, max: 6 }],
   },
   { _id: false }
 );
@@ -71,6 +92,9 @@ const taskSchema = new Schema<ITask>(
     actualMinutes: { type: Number },
     history: [taskHistorySchema],
     isDeleted: { type: Boolean, default: false },
+    recurrence: { type: recurrenceSchema, default: () => ({ type: 'none', interval: 1, daysOfWeek: [] }) },
+    parentRecurrenceId: { type: Schema.Types.ObjectId, ref: 'Task' },
+    isRecurrenceInstance: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
@@ -78,5 +102,7 @@ const taskSchema = new Schema<ITask>(
 taskSchema.index({ userId: 1, currentDate: 1 });
 taskSchema.index({ userId: 1, status: 1 });
 taskSchema.index({ userId: 1, createdAt: -1 });
+taskSchema.index({ userId: 1, 'recurrence.type': 1 });
+taskSchema.index({ userId: 1, parentRecurrenceId: 1 });
 
 export const Task = mongoose.model<ITask>('Task', taskSchema);
