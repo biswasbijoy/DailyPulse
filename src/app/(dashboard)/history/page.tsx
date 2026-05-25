@@ -156,7 +156,7 @@ export default function HistoryPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-gray-900">Task History</h1>
-          <p className="text-gray-500 mt-1">All tasks grouped by date</p>
+          <p className="text-muted-foreground mt-1">All tasks grouped by date</p>
         </div>
         <Button
           variant="gradient"
@@ -170,7 +170,7 @@ export default function HistoryPage() {
       <FilterBar onFilter={handleFilter} showDateFilter />
 
       {loading ? (
-        <div className="text-gray-400 text-sm">Loading history...</div>
+        <div className="text-muted-foreground text-sm">Loading history...</div>
       ) : displayTasks.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
@@ -179,7 +179,7 @@ export default function HistoryPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
               </svg>
             </div>
-            <p className="text-gray-400 text-sm">No tasks found.</p>
+            <p className="text-muted-foreground text-sm">No tasks found.</p>
           </CardContent>
         </Card>
       ) : (
@@ -195,7 +195,7 @@ export default function HistoryPage() {
                   <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
                   <div className="flex items-center gap-3 shrink-0">
                     <h2 className="text-base font-semibold text-gray-800">{formatGroupDate(date)}</h2>
-                    <span className="text-xs text-gray-400 bg-gray-100 px-2.5 py-0.5 rounded-full">
+                    <span className="text-xs text-muted-foreground bg-secondary px-2.5 py-0.5 rounded-full">
                       {completedCount}/{dateTasks.length} done
                     </span>
                     {date === todayStr && (
@@ -224,7 +224,7 @@ export default function HistoryPage() {
                             </p>
                             <div className="flex flex-wrap gap-2 mt-1">
                               {task.category && (
-                                <span className="text-[11px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                                <span className="text-[11px] text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
                                   {task.category}
                                 </span>
                               )}
@@ -237,7 +237,7 @@ export default function HistoryPage() {
                                 </span>
                               )}
                               {!isCompleted && (
-                                <span className="text-[11px] text-gray-400 capitalize">
+                                <span className="text-[11px] text-muted-foreground capitalize">
                                   {task.status === 'postponed' ? 'rescheduled' : task.status.replace('_', ' ')}
                                 </span>
                               )}

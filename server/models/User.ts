@@ -1,13 +1,25 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+export interface IUserSettings {
+  theme: 'light' | 'dark' | 'system';
+}
+
 export interface IUser extends Document {
   name: string;
   email: string;
   passwordHash: string;
   timezone: string;
+  settings: IUserSettings;
   createdAt: Date;
   updatedAt: Date;
 }
+
+const userSettingsSchema = new Schema<IUserSettings>(
+  {
+    theme: { type: String, enum: ['light', 'dark', 'system'], default: 'system' },
+  },
+  { _id: false }
+);
 
 const userSchema = new Schema<IUser>(
   {
@@ -15,6 +27,7 @@ const userSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     passwordHash: { type: String, required: true },
     timezone: { type: String, default: 'UTC' },
+    settings: { type: userSettingsSchema, default: () => ({ theme: 'system' }) },
   },
   { timestamps: true }
 );

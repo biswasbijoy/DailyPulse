@@ -10,6 +10,25 @@ interface DailyBreakdown {
   total: number;
 }
 
+interface CategoryBreakdown {
+  name: string;
+  count: number;
+  completed: number;
+}
+
+interface PriorityDistribution {
+  name: string;
+  total: number;
+  completed: number;
+}
+
+interface EstimationAccuracy {
+  total: number;
+  matched: number;
+  overEstimated: number;
+  underEstimated: number;
+}
+
 interface AnalyticsSummary {
   totalTasks: number;
   completedTasks: number;
@@ -24,6 +43,9 @@ interface AnalyticsSummary {
 interface AnalyticsData {
   summary: AnalyticsSummary;
   dailyBreakdown: DailyBreakdown[];
+  categoryBreakdown: CategoryBreakdown[];
+  priorityDistribution: PriorityDistribution[];
+  estimationAccuracy: EstimationAccuracy;
 }
 
 export class AnalyticsService {
@@ -121,6 +143,59 @@ export class AnalyticsService {
     return this.getSummary(userId, yearAgo, timezone);
   }
 
+  private getCategoryBreakdown(tasks: any[]): CategoryBreakdown[] {
+    const grouped: Record<string, { count: number; completed: number }> = {};
+    for (const task of tasks) {
+      const cat = task.category || 'Uncategorized';
+      if (!grouped[cat]) {
+        grouped[cat] = { count: 0, completed: 0 };
+      }
+      grouped[cat].count++;
+      if (task.status === 'completed') grouped[cat].completed++;
+    }
+    return Object.entries(grouped)
+      .map(([name, data]) => ({ name, ...data }))
+      .sort((a, b) => b.count - a.count);
+  }
+
+  private getPriorityDistribution(tasks: any[]): PriorityDistribution[] {
+    const grouped: Record<string, { total: number; completed: number }> = {};
+    for (const task of tasks) {
+      const pri = task.priority;
+      if (!grouped[pri]) {
+        grouped[pri] = { total: 0, completed: 0 };
+      }
+      grouped[pri].total++;
+      if (task.status === 'completed') grouped[pri].completed++;
+    }
+    return ['high', 'medium', 'low'].map((name) => ({
+      name: name.charAt(0).toUpperCase() + name.slice(1),
+      total: grouped[name]?.total || 0,
+      completed: grouped[name]?.completed || 0,
+    }));
+  }
+
+  private getEstimationAccuracy(tasks: any[]): EstimationAccuracy {
+    const withEstimates = tasks.filter((t: any) => t.estimatedMinutes != null && t.actualMinutes != null);
+    const total = withEstimates.length;
+    let matched = 0;
+    let overEstimated = 0;
+    let underEstimated = 0;
+
+    for (const task of withEstimates) {
+      const diff = task.actualMinutes - task.estimatedMinutes;
+      if (Math.abs(diff) <= task.estimatedMinutes * 0.2) {
+        matched++;
+      } else if (diff > 0) {
+        underEstimated++;
+      } else {
+        overEstimated++;
+      }
+    }
+
+    return { total, matched, overEstimated, underEstimated };
+  }
+
   private async getSummary(userId: string, sinceDate: Date, timezone?: string): Promise<AnalyticsData> {
     const sinceDateStr = formatDateString(sinceDate, timezone);
     const tasks = await Task.find({
@@ -139,6 +214,9 @@ export class AnalyticsService {
     const productivityScore = completedTasks * 5 - postponedTasks * 2 - cancelledTasks * 1;
     const streak = await this.getStreak(userId, timezone);
     const dailyBreakdown = await this.getDailyBreakdown(userId, sinceDate, timezone);
+    const categoryBreakdown = this.getCategoryBreakdown(tasks);
+    const priorityDistribution = this.getPriorityDistribution(tasks);
+    const estimationAccuracy = this.getEstimationAccuracy(tasks);
 
     return {
       summary: {
@@ -152,6 +230,9 @@ export class AnalyticsService {
         streak,
       },
       dailyBreakdown,
+      categoryBreakdown,
+      priorityDistribution,
+      estimationAccuracy,
     };
   }
 }

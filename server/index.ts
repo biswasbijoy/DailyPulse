@@ -8,6 +8,8 @@ import { errorHandler } from './middleware/errorHandler';
 import authRoutes from './routes/authRoutes';
 import taskRoutes from './routes/taskRoutes';
 import analyticsRoutes from './routes/analyticsRoutes';
+import projectRoutes from './routes/projectRoutes';
+import templateRoutes from './routes/templateRoutes';
 
 const app = express();
 
@@ -28,6 +30,8 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/templates', templateRoutes);
 
 app.use(errorHandler);
 

@@ -91,7 +91,7 @@ export default function CalendarPage() {
     <div className="space-y-6 animate-in stagger-1">
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-gray-900">Calendar</h1>
-        <p className="text-gray-500 mt-1">View and manage tasks by date</p>
+        <p className="text-muted-foreground mt-1">View and manage tasks by date</p>
       </div>
 
       <div className="grid lg:grid-cols-[1fr_380px] gap-6">
@@ -109,9 +109,9 @@ export default function CalendarPage() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-7 gap-px bg-gray-100 rounded-lg overflow-hidden">
+            <div className="grid grid-cols-7 gap-px bg-secondary rounded-lg overflow-hidden">
               {DAYS.map((d) => (
-                <div key={d} className="bg-gray-50 px-2 py-2 text-center text-xs font-semibold text-gray-500">
+                <div key={d} className="bg-muted/50 px-2 py-2 text-center text-xs font-semibold text-muted-foreground">
                   {d}
                 </div>
               ))}
@@ -128,7 +128,7 @@ export default function CalendarPage() {
                     } ${isSelected ? 'ring-2 ring-blue-500 ring-inset bg-blue-50' : ''}`}
                   >
                     <span className={`text-xs font-medium mb-1 block ${
-                      isToday ? 'bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center' : 'text-gray-700'
+                      isToday ? 'bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center' : 'text-foreground'
                     }`}>
                       {cell.day}
                     </span>
@@ -141,14 +141,14 @@ export default function CalendarPage() {
                               ? 'bg-emerald-100 text-emerald-700 line-through'
                               : task.status === 'postponed'
                               ? 'bg-purple-100 text-purple-700'
-                              : 'bg-gray-100 text-gray-700'
+                              : 'bg-secondary text-foreground'
                           }`}
                         >
                           {task.title}
                         </div>
                       ))}
                       {tasks.length > 3 && (
-                        <div className="text-[10px] text-gray-400 px-1">
+                        <div className="text-[10px] text-muted-foreground px-1">
                           +{tasks.length - 3} more
                         </div>
                       )}
@@ -180,9 +180,9 @@ export default function CalendarPage() {
                 </div>
 
                 {dayLoading ? (
-                  <p className="text-sm text-gray-400">Loading...</p>
+                  <p className="text-sm text-muted-foreground">Loading...</p>
                 ) : dayTasks.length === 0 ? (
-                  <p className="text-sm text-gray-400">No tasks for this date.</p>
+                  <p className="text-sm text-muted-foreground">No tasks for this date.</p>
                 ) : (
                   <div className="space-y-2">
                     {dayTasks.map((task) => (
@@ -193,7 +193,7 @@ export default function CalendarPage() {
                             ? 'bg-emerald-50 border-emerald-200'
                             : task.status === 'postponed'
                             ? 'bg-purple-50 border-purple-200'
-                            : 'bg-gray-50 border-gray-100'
+                            : 'bg-muted/50 border-gray-100'
                         }`}
                       >
                         <div className="flex items-center gap-2">
@@ -201,12 +201,12 @@ export default function CalendarPage() {
                           <p className={`font-medium truncate flex-1 ${task.status === 'completed' ? 'line-through text-emerald-700' : 'text-gray-800'}`}>
                             {task.title}
                           </p>
-                          <span className="text-[10px] text-gray-400 capitalize">
+                          <span className="text-[10px] text-muted-foreground capitalize">
                             {task.status === 'postponed' ? 'rescheduled' : task.status.replace('_', ' ')}
                           </span>
                         </div>
                         {task.description && (
-                          <p className="text-xs text-gray-400 mt-1 ml-4">{task.description}</p>
+                          <p className="text-xs text-muted-foreground mt-1 ml-4">{task.description}</p>
                         )}
                       </div>
                     ))}
@@ -216,7 +216,7 @@ export default function CalendarPage() {
             </Card>
           ) : (
             <Card>
-              <CardContent className="p-5 text-center text-sm text-gray-400">
+              <CardContent className="p-5 text-center text-sm text-muted-foreground">
                 Select a date to view tasks
               </CardContent>
             </Card>

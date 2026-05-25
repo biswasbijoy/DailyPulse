@@ -11,7 +11,7 @@ interface TaskDetailsProps {
 const statusColors: Record<string, string> = {
   completed: 'bg-emerald-50 text-emerald-600',
   in_progress: 'bg-amber-50 text-amber-600',
-  pending: 'bg-gray-100 text-gray-500',
+  pending: 'bg-secondary text-muted-foreground',
   postponed: 'bg-purple-50 text-purple-600',
 };
 
@@ -47,7 +47,7 @@ export function TaskDetails({ task, onClose }: TaskDetailsProps) {
                 {task.priority}
               </span>
               {task.category && (
-                <span className="text-xs text-gray-400 bg-gray-100 px-2.5 py-0.5 rounded-full">
+                <span className="text-xs text-muted-foreground bg-secondary px-2.5 py-0.5 rounded-full">
                   {task.category}
                 </span>
               )}
@@ -55,14 +55,14 @@ export function TaskDetails({ task, onClose }: TaskDetailsProps) {
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 transition-colors shrink-0"
+            className="w-8 h-8 rounded-lg bg-secondary hover:bg-accent flex items-center justify-center text-muted-foreground transition-colors shrink-0"
           >
             ✕
           </button>
         </div>
 
         {task.description && (
-          <p className="text-sm text-gray-500 mb-5 bg-gray-50 rounded-xl p-3">{task.description}</p>
+          <p className="text-sm text-muted-foreground mb-5 bg-muted rounded-xl p-3">{task.description}</p>
         )}
 
         <div className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm mb-5">
@@ -81,10 +81,10 @@ export function TaskDetails({ task, onClose }: TaskDetailsProps) {
 
         {task.tags && task.tags.length > 0 && (
           <div className="mb-5">
-            <p className="text-xs text-gray-400 mb-2 font-medium">Tags</p>
+            <p className="text-xs text-muted-foreground mb-2 font-medium">Tags</p>
             <div className="flex flex-wrap gap-1.5">
               {task.tags.map((tag, i) => (
-                <span key={i} className="text-xs bg-gray-100 text-gray-500 px-2.5 py-0.5 rounded-full">
+                <span key={i} className="text-xs bg-secondary text-muted-foreground px-2.5 py-0.5 rounded-full">
                   {tag}
                 </span>
               ))}
@@ -106,13 +106,13 @@ export function TaskDetails({ task, onClose }: TaskDetailsProps) {
                     {i < task.history.length - 1 && <div className="w-px h-full bg-blue-100" />}
                   </div>
                   <div className="flex-1 pb-2">
-                    <span className="font-medium text-gray-700 capitalize">
+                    <span className="font-medium text-foreground capitalize">
                       {entry.action === 'postponed' ? 'rescheduled' : entry.action.replace('_', ' ')}
                     </span>
                     {entry.fromDate && entry.toDate && entry.fromDate !== entry.toDate && (
-                      <span className="text-gray-400"> ({entry.fromDate} → {entry.toDate})</span>
+                      <span className="text-muted-foreground"> ({entry.fromDate} → {entry.toDate})</span>
                     )}
-                    <p className="text-gray-400 mt-0.5">{formatDate(entry.timestamp)}</p>
+                    <p className="text-muted-foreground mt-0.5">{formatDate(entry.timestamp)}</p>
                   </div>
                 </div>
               ))}
@@ -127,7 +127,7 @@ export function TaskDetails({ task, onClose }: TaskDetailsProps) {
 function DetailItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs text-gray-400 mb-0.5">{label}</p>
+      <p className="text-xs text-muted-foreground mb-0.5">{label}</p>
       <p className="text-sm font-medium text-gray-800">{value}</p>
     </div>
   );

@@ -57,14 +57,14 @@ export default function DashboardPage() {
     <div className="space-y-8">
       <div className="animate-in stagger-1">
         <h1 className="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
-        <p className="text-gray-500 mt-1">
-          Welcome back, <span className="font-medium text-gray-700">{user.name}</span>
+        <p className="text-muted-foreground mt-1">
+          Welcome back, <span className="font-medium text-foreground">{user.name}</span>
         </p>
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 animate-in stagger-2">
         <StatCard
-          label="Today&apos;s Tasks"
+          label="Today's Tasks"
           value={tasks.length}
           icon={ClipboardList}
           gradient="bg-gradient-to-br from-blue-500 to-indigo-600"
@@ -96,14 +96,14 @@ export default function DashboardPage() {
       <Card className="animate-in stagger-3">
         <CardContent className="p-0">
           <div className="px-5 py-4 border-b border-gray-50">
-            <h3 className="font-semibold text-gray-900">Today&apos;s Overview</h3>
+            <h3 className="font-semibold text-gray-900">Today's Overview</h3>
           </div>
           {isLoading ? (
-            <div className="p-5 text-gray-400 text-sm">Loading...</div>
+            <div className="p-5 text-muted-foreground text-sm">Loading...</div>
           ) : tasks.length === 0 ? (
             <div className="p-5 text-center">
               <Target className="w-10 h-10 mx-auto mb-3 text-gray-300" />
-              <p className="text-gray-400 text-sm">No tasks for today. Add one to get started!</p>
+              <p className="text-muted-foreground text-sm">No tasks for today. Add one to get started!</p>
             </div>
           ) : (
             <div className="divide-y divide-gray-50">
@@ -118,7 +118,7 @@ export default function DashboardPage() {
                   <div className="flex-1 min-w-0">
                     <p className={cn(
                       'text-sm truncate',
-                      task.status === 'completed' ? 'line-through text-gray-400' : 'text-gray-700'
+                      task.status === 'completed' ? 'line-through text-muted-foreground' : 'text-foreground'
                     )}>
                       {task.title}
                     </p>
@@ -128,7 +128,7 @@ export default function DashboardPage() {
                     task.status === 'completed' ? 'bg-emerald-50 text-emerald-600' :
                     task.status === 'in_progress' ? 'bg-amber-50 text-amber-600' :
                     task.status === 'postponed' ? 'bg-purple-50 text-purple-600' :
-                    'bg-gray-100 text-gray-500'
+                    'bg-secondary text-muted-foreground'
                   )}>
                     {task.status === 'postponed' ? 'rescheduled' : task.status.replace('_', ' ')}
                   </span>

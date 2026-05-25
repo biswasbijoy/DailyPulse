@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import type { User } from '@/types';
 import api from '@/services/api';
 
@@ -9,6 +10,7 @@ interface AuthContextType {
   setAuth: (user: User) => void;
   logout: () => void;
   isLoading: boolean;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -16,22 +18,26 @@ const AuthContext = createContext<AuthContextType>({
   setAuth: () => {},
   logout: () => {},
   isLoading: true,
+  refreshUser: async () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    api.get('/auth/me')
-      .then((res) => {
-        setUser(res.data.data.user);
-      })
-      .catch(() => {
-        setUser(null);
-      })
-      .finally(() => setIsLoading(false));
+  const fetchUser = useCallback(async () => {
+    try {
+      const res = await api.get('/auth/me');
+      setUser(res.data.data.user);
+    } catch {
+      setUser(null);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchUser().finally(() => setIsLoading(false));
+  }, [fetchUser]);
 
   const setAuth = useCallback((user: User) => {
     setUser(user);
@@ -40,12 +46,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(() => {
     api.post('/auth/logout').finally(() => {
       setUser(null);
-      window.location.href = '/login';
+      router.push('/login');
     });
-  }, []);
+  }, [router]);
 
   return (
-    <AuthContext.Provider value={{ user, setAuth, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, setAuth, logout, isLoading, refreshUser: fetchUser }}>
       {children}
     </AuthContext.Provider>
   );

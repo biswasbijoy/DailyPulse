@@ -18,6 +18,38 @@ export interface Recurrence {
   daysOfWeek?: number[];
 }
 
+export interface Project {
+  _id: string;
+  userId: string;
+  name: string;
+  description?: string;
+  color?: string;
+  archived: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TaskTemplate {
+  _id: string;
+  userId: string;
+  name: string;
+  title: string;
+  description?: string;
+  priority: TaskPriority;
+  category?: string;
+  dueDateOffset?: number;
+  tags: string[];
+  estimatedMinutes?: number;
+  recurrenceType: RecurrenceType;
+  recurrenceInterval: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserSettings {
+  theme: 'light' | 'dark' | 'system';
+}
+
 export interface Task {
   _id: string;
   userId: string;
@@ -34,8 +66,13 @@ export interface Task {
   tags: string[];
   estimatedMinutes?: number;
   actualMinutes?: number;
+  timerStartedAt?: string;
+  reminderAt?: string;
+  projectId?: string;
+  templateFromId?: string;
   history: TaskHistoryEntry[];
   isDeleted: boolean;
+  deletedAt?: string;
   recurrence: Recurrence;
   parentRecurrenceId?: string;
   isRecurrenceInstance: boolean;
@@ -52,6 +89,8 @@ export interface CreateTaskInput {
   tags?: string[];
   estimatedMinutes?: number;
   recurrence?: Recurrence;
+  projectId?: string;
+  reminderAt?: string;
 }
 
 export interface UpdateTaskInput {
@@ -65,6 +104,8 @@ export interface UpdateTaskInput {
   estimatedMinutes?: number;
   actualMinutes?: number;
   recurrence?: Recurrence;
+  projectId?: string;
+  reminderAt?: string;
 }
 
 export interface User {
@@ -72,6 +113,7 @@ export interface User {
   name: string;
   email: string;
   timezone: string;
+  settings: UserSettings;
   createdAt: string;
   updatedAt: string;
 }
@@ -109,12 +151,37 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export interface CategoryBreakdown {
+  name: string;
+  count: number;
+  completed: number;
+}
+
+export interface PriorityDistribution {
+  name: string;
+  total: number;
+  completed: number;
+}
+
+export interface EstimationAccuracy {
+  total: number;
+  matched: number;
+  overEstimated: number;
+  underEstimated: number;
+}
+
 export interface AnalyticsData {
   period: string;
   summary: AnalyticsSummary;
-  dailyBreakdown?: {
+  dailyBreakdown: {
     date: string;
     completed: number;
+    pending: number;
+    postponed: number;
+    cancelled: number;
     total: number;
   }[];
+  categoryBreakdown: CategoryBreakdown[];
+  priorityDistribution: PriorityDistribution[];
+  estimationAccuracy: EstimationAccuracy;
 }

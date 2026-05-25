@@ -33,6 +33,7 @@ function sanitizeUser(user: any) {
     name: user.name,
     email: user.email,
     timezone: user.timezone,
+    settings: user.settings,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };
@@ -90,4 +91,39 @@ export const me = asyncHandler(async (req: AuthRequest, res: Response) => {
     throw new AppError('User not found', 404);
   }
   return sendSuccess(res, { user: sanitizeUser(user) });
+});
+
+export const updateProfile = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const user = await User.findById(req.userId);
+  if (!user) throw new AppError('User not found', 404);
+
+  if (req.body.name) user.name = req.body.name;
+  if (req.body.timezone) user.timezone = req.body.timezone;
+  await user.save();
+
+  return sendSuccess(res, { user: sanitizeUser(user) }, 'Profile updated');
+});
+
+export const changePassword = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const user = await User.findById(req.userId);
+  if (!user) throw new AppError('User not found', 404);
+
+  const isMatch = await bcrypt.compare(req.body.currentPassword, user.passwordHash);
+  if (!isMatch) throw new AppError('Current password is incorrect', 401);
+
+  user.passwordHash = await bcrypt.hash(req.body.newPassword, 12);
+  await user.save();
+
+  return sendSuccess(res, null, 'Password changed');
+});
+
+export const updateSettings = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const user = await User.findById(req.userId);
+  if (!user) throw new AppError('User not found', 404);
+
+  if (!user.settings) user.settings = { theme: 'system' };
+  if (req.body.theme) user.settings.theme = req.body.theme;
+  await user.save();
+
+  return sendSuccess(res, { settings: user.settings }, 'Settings updated');
 });
