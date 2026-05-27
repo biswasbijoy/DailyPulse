@@ -7,6 +7,7 @@ import { useAuth } from '@/store/authContext';
 import { getTodayTasks, getPostponedTasks, filterTasks } from '@/services/tasks';
 import { TaskForm } from '@/components/TaskForm';
 import { TaskList } from '@/components/TaskList';
+import { TaskDetails } from '@/components/TaskDetails';
 import { FilterBar } from '@/components/FilterBar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,6 +19,7 @@ export default function TasksPage() {
   const { user, isLoading: authLoading } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [editTask, setEditTask] = useState<Task | undefined>(undefined);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [filters, setFilters] = useState<FilterValues>({
     search: '', priority: '', status: '', category: '', dateFrom: '', dateTo: '',
   });
@@ -73,6 +75,7 @@ export default function TasksPage() {
 
   const displayTasks = hasActiveFilters ? filteredTasks : tasks;
   const loading = hasActiveFilters ? filterLoading : isLoading;
+  const handleViewDetails = (task: Task) => setSelectedTask(task);
 
   return (
     <div className="space-y-6 animate-in stagger-1">
@@ -125,7 +128,7 @@ export default function TasksPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <TaskList tasks={displayTasks} onEdit={handleEdit} showCheckbox />
+              <TaskList tasks={displayTasks} onEdit={handleEdit} onViewDetails={handleViewDetails} showCheckbox />
             </CardContent>
           </Card>
 
@@ -141,12 +144,13 @@ export default function TasksPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <TaskList tasks={postponedTasks} onEdit={handleEdit} showRevert />
+                <TaskList tasks={postponedTasks} onEdit={handleEdit} onViewDetails={handleViewDetails} showRevert />
               </CardContent>
             </Card>
           ) : null)}
         </>
       )}
+      <TaskDetails task={selectedTask} onClose={() => setSelectedTask(null)} />
     </div>
   );
 }

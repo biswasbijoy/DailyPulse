@@ -6,12 +6,12 @@ import { completeTask, postponeTask, revertPostponeTask, deleteTask, startTimer,
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
-import { TaskDetails } from '@/components/TaskDetails';
 import type { Task } from '@/types';
 
 interface TaskListProps {
   tasks: Task[];
   onEdit: (task: Task) => void;
+  onViewDetails?: (task: Task) => void;
   showRevert?: boolean;
   showCheckbox?: boolean;
 }
@@ -61,11 +61,10 @@ function StatusIcon({ status }: { status: string }) {
   );
 }
 
-export function TaskList({ tasks, onEdit, showRevert, showCheckbox }: TaskListProps) {
+export function TaskList({ tasks, onEdit, onViewDetails, showRevert, showCheckbox }: TaskListProps) {
   const queryClient = useQueryClient();
   const [postponeDate, setPostponeDate] = useState<Record<string, string>>({});
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; title: string } | null>(null);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const minDate = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
@@ -245,7 +244,7 @@ export function TaskList({ tasks, onEdit, showRevert, showCheckbox }: TaskListPr
                     {task.timerStartedAt ? 'Stop' : 'Timer'}
                   </Button>
                 )}
-                <Button size="sm" variant="ghost" onClick={() => setSelectedTask(task)}>
+                <Button size="sm" variant="ghost" onClick={() => onViewDetails?.(task)}>
                   Details
                 </Button>
                 <Button size="sm" variant="ghost" onClick={() => onEdit(task)}>
@@ -263,8 +262,6 @@ export function TaskList({ tasks, onEdit, showRevert, showCheckbox }: TaskListPr
           </Card>
         );
       })}
-
-      <TaskDetails task={selectedTask} onClose={() => setSelectedTask(null)} />
 
       <ConfirmDialog
         open={!!deleteConfirm}

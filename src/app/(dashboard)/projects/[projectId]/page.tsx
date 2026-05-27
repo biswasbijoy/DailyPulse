@@ -11,6 +11,7 @@ import { filterTasks } from '@/services/tasks';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { TaskList } from '@/components/TaskList';
+import { TaskDetails } from '@/components/TaskDetails';
 import { TaskForm } from '@/components/TaskForm';
 import type { Task } from '@/types';
 
@@ -20,6 +21,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ projec
   const { user } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [editTask, setEditTask] = useState<Task | undefined>(undefined);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const { data: project, isLoading: projectLoading } = useQuery({
     queryKey: ['project', projectId],
@@ -96,8 +98,9 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ projec
       {tasksLoading ? (
         <div className="text-muted-foreground text-sm py-8 text-center">Loading tasks...</div>
       ) : (
-        <TaskList tasks={tasks} onEdit={handleEdit} showCheckbox />
+        <TaskList tasks={tasks} onEdit={handleEdit} onViewDetails={setSelectedTask} showCheckbox />
       )}
+      <TaskDetails task={selectedTask} onClose={() => setSelectedTask(null)} />
     </div>
   );
 }
