@@ -1,8 +1,8 @@
 import api from './api';
 import type { Project } from '@/types';
 
-export async function getProjects(): Promise<Project[]> {
-  const res = await api.get('/projects');
+export async function getProjects(includeArchived = false): Promise<Project[]> {
+  const res = await api.get(`/projects?includeArchived=${includeArchived}`);
   return res.data.data.projects;
 }
 

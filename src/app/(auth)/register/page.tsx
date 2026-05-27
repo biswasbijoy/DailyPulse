@@ -41,14 +41,14 @@ export default function RegisterPage() {
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-blue-200 mx-auto mb-4">
             D
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Create account</h1>
+          <h1 className="text-2xl font-bold text-foreground">Create account</h1>
           <p className="text-muted-foreground mt-1">Get started with DailyPulse</p>
         </div>
 
         <div className="bg-white/70 backdrop-blur-xl rounded-2xl border border-white/50 shadow-xl shadow-gray-200/50 p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="bg-red-50 text-red-600 text-sm rounded-xl p-3 text-center border border-red-100">
+              <div className="bg-red-50 text-red-600 dark:bg-red-950/50 dark:text-red-300 dark:border-red-900 text-sm rounded-xl p-3 text-center border border-red-100">
                 {error}
               </div>
             )}
@@ -88,7 +88,7 @@ export default function RegisterPage() {
           </form>
           <p className="mt-5 text-center text-sm text-muted-foreground">
             Already have an account?{' '}
-            <Link href="/login" className="text-blue-600 font-medium hover:text-blue-700 transition-colors">
+            <Link href="/login" className="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
               Sign in
             </Link>
           </p>

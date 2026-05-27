@@ -12,9 +12,9 @@ import { ConfirmDialog } from '@/components/ConfirmDialog';
 import type { Task } from '@/types';
 
 const priorityConfig = {
-  high: { badge: 'bg-red-50 text-red-600', label: 'High' },
-  medium: { badge: 'bg-amber-50 text-amber-600', label: 'Medium' },
-  low: { badge: 'bg-emerald-50 text-emerald-600', label: 'Low' },
+  high: { badge: 'bg-red-50 text-red-600 dark:bg-red-900/50 dark:text-red-300', label: 'High' },
+  medium: { badge: 'bg-amber-50 text-amber-600 dark:bg-amber-900/50 dark:text-amber-300', label: 'Medium' },
+  low: { badge: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-300', label: 'Low' },
 };
 
 export default function TrashPage() {
@@ -54,11 +54,11 @@ export default function TrashPage() {
   return (
     <div className="space-y-6 animate-in stagger-1">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
-          <Trash2 className="w-5 h-5 text-red-500" />
+        <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/50 flex items-center justify-center">
+          <Trash2 className="w-5 h-5 text-red-500 dark:text-red-400" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Trash</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Trash</h1>
           <p className="text-muted-foreground mt-1">Deleted tasks can be restored or permanently removed</p>
         </div>
       </div>
@@ -68,7 +68,7 @@ export default function TrashPage() {
       ) : tasks.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
-            <Trash2 className="w-10 h-10 mx-auto mb-3 text-gray-300" />
+            <Trash2 className="w-10 h-10 mx-auto mb-3 text-muted-foreground" />
             <p className="text-muted-foreground text-sm">Trash is empty.</p>
           </CardContent>
         </Card>
@@ -77,13 +77,13 @@ export default function TrashPage() {
           {tasks.map((task) => {
             const config = priorityConfig[task.priority] || priorityConfig.low;
             return (
-              <Card key={task._id} className="border-red-100 bg-red-50/20">
+              <Card key={task._id} className="border-red-100 bg-red-50/20 dark:border-red-900/50 dark:bg-red-950/20">
                 <CardContent className="flex items-center gap-3 py-3.5">
-                  <div className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center shrink-0">
-                    <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
+                  <div className="w-6 h-6 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center shrink-0">
+                    <AlertTriangle className="w-3.5 h-3.5 text-red-400 dark:text-red-300" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-800 truncate">{task.title}</p>
+                    <p className="text-sm font-medium text-foreground truncate">{task.title}</p>
                     <div className="flex flex-wrap gap-2 mt-1">
                       <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${config.badge}`}>
                         {config.label}
@@ -94,7 +94,7 @@ export default function TrashPage() {
                         </span>
                       )}
                       {task.deletedAt && (
-                        <span className="text-[11px] text-red-400">
+                        <span className="text-[11px] text-red-400 dark:text-red-300">
                           Deleted {new Date(task.deletedAt).toLocaleDateString()}
                         </span>
                       )}

@@ -77,7 +77,7 @@ export default function TasksPage() {
     <div className="space-y-6 animate-in stagger-1">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Daily Tasks</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Daily Tasks</h1>
           <p className="text-muted-foreground mt-1">
             {new Date().toLocaleDateString('en-US', {
               weekday: 'long',
@@ -96,7 +96,7 @@ export default function TasksPage() {
       </div>
 
       {showForm && (
-        <Card className="border-blue-100 shadow-md shadow-blue-100/50 animate-in">
+        <Card className="border-blue-100 shadow-md shadow-blue-100/50 dark:border-blue-900/50 dark:shadow-blue-950/50 animate-in">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">+</span>
@@ -131,12 +131,12 @@ export default function TasksPage() {
           {!hasActiveFilters && (postponedLoading ? (
             <div className="text-muted-foreground text-sm">Loading...</div>
           ) : postponedTasks.length > 0 ? (
-            <Card className="border-yellow-100">
+            <Card className="border-yellow-100 dark:border-yellow-900/50">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-yellow-700">
+                <CardTitle className="flex items-center gap-2 text-yellow-700 dark:text-yellow-400">
                   <span className="w-5 h-5 rounded-md bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-[10px]">↻</span>
                   Rescheduled Tasks
-                  <span className="ml-auto text-sm font-normal text-yellow-500">{postponedTasks.length} task{postponedTasks.length !== 1 ? 's' : ''}</span>
+                  <span className="ml-auto text-sm font-normal text-yellow-500 dark:text-yellow-400">{postponedTasks.length} task{postponedTasks.length !== 1 ? 's' : ''}</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>

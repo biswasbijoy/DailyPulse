@@ -83,7 +83,7 @@ export default function SettingsPage() {
           <Settings className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+          <h1 className="text-2xl font-bold text-foreground">Settings</h1>
           <p className="text-sm text-muted-foreground">Manage your account settings</p>
         </div>
       </div>
@@ -91,7 +91,7 @@ export default function SettingsPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <User className="w-5 h-5 text-blue-600" />
+            <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             <CardTitle>Profile</CardTitle>
           </div>
           <CardDescription>Update your name and timezone</CardDescription>
@@ -130,7 +130,7 @@ export default function SettingsPage() {
               {loading ? 'Saving...' : 'Save Profile'}
             </Button>
             {profileMsg && (
-              <p className={`text-sm ${profileMsg.includes('success') ? 'text-green-600' : 'text-red-600'}`}>
+              <p className={`text-sm ${profileMsg.includes('success') ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                 {profileMsg}
               </p>
             )}
@@ -141,7 +141,7 @@ export default function SettingsPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Lock className="w-5 h-5 text-blue-600" />
+            <Lock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             <CardTitle>Password</CardTitle>
           </div>
           <CardDescription>Change your password</CardDescription>
@@ -161,7 +161,7 @@ export default function SettingsPage() {
               {loading ? 'Changing...' : 'Change Password'}
             </Button>
             {passwordMsg && (
-              <p className={`text-sm ${passwordMsg.includes('success') ? 'text-green-600' : 'text-red-600'}`}>
+              <p className={`text-sm ${passwordMsg.includes('success') ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                 {passwordMsg}
               </p>
             )}
@@ -172,7 +172,7 @@ export default function SettingsPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Palette className="w-5 h-5 text-blue-600" />
+            <Palette className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             <CardTitle>Appearance</CardTitle>
           </div>
           <CardDescription>Customize your experience</CardDescription>

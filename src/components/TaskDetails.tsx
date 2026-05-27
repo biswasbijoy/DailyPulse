@@ -9,16 +9,16 @@ interface TaskDetailsProps {
 }
 
 const statusColors: Record<string, string> = {
-  completed: 'bg-emerald-50 text-emerald-600',
-  in_progress: 'bg-amber-50 text-amber-600',
+  completed: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-300',
+  in_progress: 'bg-amber-50 text-amber-600 dark:bg-amber-900/50 dark:text-amber-300',
   pending: 'bg-secondary text-muted-foreground',
-  postponed: 'bg-purple-50 text-purple-600',
+  postponed: 'bg-purple-50 text-purple-600 dark:bg-purple-900/50 dark:text-purple-300',
 };
 
 const priorityColors: Record<string, string> = {
-  high: 'bg-red-50 text-red-600',
-  medium: 'bg-amber-50 text-amber-600',
-  low: 'bg-emerald-50 text-emerald-600',
+  high: 'bg-red-50 text-red-600 dark:bg-red-900/50 dark:text-red-300',
+  medium: 'bg-amber-50 text-amber-600 dark:bg-amber-900/50 dark:text-amber-300',
+  low: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-300',
 };
 
 export function TaskDetails({ task, onClose }: TaskDetailsProps) {
@@ -35,10 +35,10 @@ export function TaskDetails({ task, onClose }: TaskDetailsProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative z-50 w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-2xl bg-white border border-gray-100 shadow-2xl shadow-black/10 p-6">
+      <div className="relative z-50 w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-2xl bg-card border border-border shadow-2xl shadow-black/10 p-6">
         <div className="flex items-start justify-between mb-5">
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-semibold text-gray-900 truncate">{task.title}</h3>
+            <h3 className="text-lg font-semibold text-foreground truncate">{task.title}</h3>
             <div className="flex gap-2 mt-2">
               <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full capitalize ${statusColors[task.status] || ''}`}>
                 {task.status === 'postponed' ? 'rescheduled' : task.status.replace('_', ' ')}
@@ -94,7 +94,7 @@ export function TaskDetails({ task, onClose }: TaskDetailsProps) {
 
         {task.history && task.history.length > 0 && (
           <div>
-            <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
               Activity History
             </h4>
@@ -103,7 +103,7 @@ export function TaskDetails({ task, onClose }: TaskDetailsProps) {
                 <div key={i} className="flex items-start gap-3 text-xs">
                   <div className="flex flex-col items-center">
                     <div className="w-2 h-2 rounded-full bg-blue-400 mt-1" />
-                    {i < task.history.length - 1 && <div className="w-px h-full bg-blue-100" />}
+                    {i < task.history.length - 1 && <div className="w-px h-full bg-blue-100 dark:bg-blue-900" />}
                   </div>
                   <div className="flex-1 pb-2">
                     <span className="font-medium text-foreground capitalize">
@@ -128,7 +128,7 @@ function DetailItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <p className="text-xs text-muted-foreground mb-0.5">{label}</p>
-      <p className="text-sm font-medium text-gray-800">{value}</p>
+      <p className="text-sm font-medium text-foreground">{value}</p>
     </div>
   );
 }

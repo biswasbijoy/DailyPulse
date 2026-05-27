@@ -90,7 +90,7 @@ export default function CalendarPage() {
   return (
     <div className="space-y-6 animate-in stagger-1">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Calendar</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Calendar</h1>
         <p className="text-muted-foreground mt-1">View and manage tasks by date</p>
       </div>
 
@@ -101,7 +101,7 @@ export default function CalendarPage() {
               <Button variant="ghost" size="sm" onClick={prevMonth}>
                 <ChevronLeft className="w-4 h-4" />
               </Button>
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 className="text-lg font-semibold text-foreground">
                 {viewDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
               </h2>
               <Button variant="ghost" size="sm" onClick={nextMonth}>
@@ -123,9 +123,9 @@ export default function CalendarPage() {
                   <button
                     key={cell.date}
                     onClick={() => setSelectedDate(cell.date)}
-                    className={`bg-white px-2 py-2 min-h-[80px] text-left transition-colors hover:bg-blue-50/50 ${
+                    className={`bg-card px-2 py-2 min-h-[80px] text-left transition-colors hover:bg-accent/50 ${
                       !cell.isCurrentMonth ? 'opacity-40' : ''
-                    } ${isSelected ? 'ring-2 ring-blue-500 ring-inset bg-blue-50' : ''}`}
+                    } ${isSelected ? 'ring-2 ring-blue-500 ring-inset bg-accent' : ''}`}
                   >
                     <span className={`text-xs font-medium mb-1 block ${
                       isToday ? 'bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center' : 'text-foreground'
@@ -138,9 +138,9 @@ export default function CalendarPage() {
                           key={task._id}
                           className={`text-[10px] truncate rounded px-1 py-0.5 ${
                             task.status === 'completed'
-                              ? 'bg-emerald-100 text-emerald-700 line-through'
+                              ? 'bg-emerald-100 text-emerald-700 line-through dark:bg-emerald-900/50 dark:text-emerald-300'
                               : task.status === 'postponed'
-                              ? 'bg-purple-100 text-purple-700'
+                              ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300'
                               : 'bg-secondary text-foreground'
                           }`}
                         >
@@ -165,7 +165,7 @@ export default function CalendarPage() {
             <Card>
               <CardContent className="p-5">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="font-semibold text-foreground">
                     {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', {
                       weekday: 'long',
                       month: 'short',
@@ -173,7 +173,7 @@ export default function CalendarPage() {
                     })}
                   </h3>
                   {selectedDate === todayStr && (
-                    <span className="text-xs font-medium bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">
+                    <span className="text-xs font-medium bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-300 px-2 py-0.5 rounded-full">
                       Today
                     </span>
                   )}
@@ -190,15 +190,15 @@ export default function CalendarPage() {
                         key={task._id}
                         className={`p-3 rounded-xl border text-sm ${
                           task.status === 'completed'
-                            ? 'bg-emerald-50 border-emerald-200'
+                            ? 'bg-emerald-50 border-emerald-200 dark:bg-emerald-950/50 dark:border-emerald-800'
                             : task.status === 'postponed'
-                            ? 'bg-purple-50 border-purple-200'
-                            : 'bg-muted/50 border-gray-100'
+                            ? 'bg-purple-50 border-purple-200 dark:bg-purple-950/50 dark:border-purple-800'
+                            : 'bg-muted/50 border-gray-100 dark:border-gray-700'
                         }`}
                       >
                         <div className="flex items-center gap-2">
                           <span className={`w-2 h-2 rounded-full shrink-0 ${priorityDot[task.priority] || 'bg-gray-300'}`} />
-                          <p className={`font-medium truncate flex-1 ${task.status === 'completed' ? 'line-through text-emerald-700' : 'text-gray-800'}`}>
+                          <p className={`font-medium truncate flex-1 ${task.status === 'completed' ? 'line-through text-emerald-700 dark:text-emerald-300' : 'text-foreground'}`}>
                             {task.title}
                           </p>
                           <span className="text-[10px] text-muted-foreground capitalize">

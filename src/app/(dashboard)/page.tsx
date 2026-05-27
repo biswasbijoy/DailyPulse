@@ -56,7 +56,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       <div className="animate-in stagger-1">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
         <p className="text-muted-foreground mt-1">
           Welcome back, <span className="font-medium text-foreground">{user.name}</span>
         </p>
@@ -95,25 +95,25 @@ export default function DashboardPage() {
 
       <Card className="animate-in stagger-3">
         <CardContent className="p-0">
-          <div className="px-5 py-4 border-b border-gray-50">
-            <h3 className="font-semibold text-gray-900">Today's Overview</h3>
+          <div className="px-5 py-4 border-b border-border">
+            <h3 className="font-semibold text-foreground">Today's Overview</h3>
           </div>
           {isLoading ? (
             <div className="p-5 text-muted-foreground text-sm">Loading...</div>
           ) : tasks.length === 0 ? (
             <div className="p-5 text-center">
-              <Target className="w-10 h-10 mx-auto mb-3 text-gray-300" />
+              <Target className="w-10 h-10 mx-auto mb-3 text-muted-foreground" />
               <p className="text-muted-foreground text-sm">No tasks for today. Add one to get started!</p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-50">
+            <div className="divide-y divide-border">
               {tasks.slice(0, 5).map((task) => (
-                <div key={task._id} className="flex items-center gap-3 px-5 py-3 hover:bg-gray-50/50 transition-colors">
+                <div key={task._id} className="flex items-center gap-3 px-5 py-3 hover:bg-accent/50 transition-colors">
                   <span className={cn(
                     'w-2 h-2 rounded-full shrink-0',
                     task.status === 'completed' ? 'bg-emerald-400' :
                     task.status === 'in_progress' ? 'bg-amber-400' :
-                    task.status === 'postponed' ? 'bg-purple-400' : 'bg-gray-300'
+                    task.status === 'postponed' ? 'bg-purple-400' : 'bg-muted-foreground/50'
                   )} />
                   <div className="flex-1 min-w-0">
                     <p className={cn(
@@ -125,9 +125,9 @@ export default function DashboardPage() {
                   </div>
                   <span className={cn(
                     'text-xs font-medium capitalize px-2.5 py-0.5 rounded-full',
-                    task.status === 'completed' ? 'bg-emerald-50 text-emerald-600' :
-                    task.status === 'in_progress' ? 'bg-amber-50 text-amber-600' :
-                    task.status === 'postponed' ? 'bg-purple-50 text-purple-600' :
+                    task.status === 'completed' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-300' :
+                    task.status === 'in_progress' ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/50 dark:text-amber-300' :
+                    task.status === 'postponed' ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/50 dark:text-purple-300' :
                     'bg-secondary text-muted-foreground'
                   )}>
                     {task.status === 'postponed' ? 'rescheduled' : task.status.replace('_', ' ')}
