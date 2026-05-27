@@ -1,6 +1,10 @@
 import { Project } from '../models/Project';
 import { Task } from '../models/Task';
 
+export async function getProjectById(projectId: string, userId: string) {
+  return Project.findOne({ _id: projectId, userId });
+}
+
 export async function listProjects(userId: string, includeArchived = false) {
   const filter: any = { userId };
   if (!includeArchived) {

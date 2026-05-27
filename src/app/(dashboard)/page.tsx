@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/store/authContext';
@@ -31,12 +32,13 @@ export default function DashboardPage() {
     enabled: !!user,
   });
 
-  if (authLoading) return null;
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, authLoading, router]);
 
-  if (!user) {
-    router.push('/login');
-    return null;
-  }
+  if (authLoading || !user) return null;
 
   const completed = tasks.filter((t) => t.status === 'completed').length;
   const pending = tasks.filter((t) => t.status === 'pending').length;

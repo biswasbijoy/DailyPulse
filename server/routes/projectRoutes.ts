@@ -9,6 +9,7 @@ const router = Router();
 router.use(authenticate);
 
 router.get('/', projectController.list);
+router.get('/:id', projectController.getById);
 router.post('/', validate(createProjectSchema), projectController.create);
 router.put('/:id', validate(updateProjectSchema), projectController.update);
 router.delete('/:id', projectController.remove);

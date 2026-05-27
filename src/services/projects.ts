@@ -6,6 +6,11 @@ export async function getProjects(includeArchived = false): Promise<Project[]> {
   return res.data.data.projects;
 }
 
+export async function getProjectById(id: string): Promise<Project> {
+  const res = await api.get(`/projects/${id}`);
+  return res.data.data.project;
+}
+
 export async function createProject(data: { name: string; description?: string; color?: string }): Promise<Project> {
   const res = await api.post('/projects', data);
   return res.data.data;
