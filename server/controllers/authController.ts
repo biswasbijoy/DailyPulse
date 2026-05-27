@@ -16,7 +16,7 @@ function setTokenCookie(res: Response, token: string) {
   res.cookie('token', token, {
     httpOnly: true,
     secure: env.nodeEnv === 'production',
-    sameSite: env.nodeEnv === 'production' ? 'strict' : 'lax',
+    sameSite: env.nodeEnv === 'production' ? 'none' : 'lax',
     signed: true,
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: '/',
@@ -24,7 +24,11 @@ function setTokenCookie(res: Response, token: string) {
 }
 
 function clearTokenCookie(res: Response) {
-  res.clearCookie('token', { path: '/' });
+  res.clearCookie('token', {
+    path: '/',
+    secure: env.nodeEnv === 'production',
+    sameSite: env.nodeEnv === 'production' ? 'none' : 'lax',
+  });
 }
 
 function sanitizeUser(user: any) {
