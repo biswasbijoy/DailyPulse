@@ -17,7 +17,7 @@ import type { FilterValues } from '@/components/FilterBar';
 function StatusIcon({ status }: { status: string }) {
   if (status === 'completed') {
     return (
-      <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm shadow-emerald-200 shrink-0">
+      <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm shadow-emerald-200 dark:shadow-emerald-900/50 shrink-0">
         <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
@@ -26,7 +26,7 @@ function StatusIcon({ status }: { status: string }) {
   }
   if (status === 'in_progress') {
     return (
-      <div className="w-6 h-6 rounded-full bg-amber-400 flex items-center justify-center shadow-sm shadow-amber-200 shrink-0">
+      <div className="w-6 h-6 rounded-full bg-amber-400 flex items-center justify-center shadow-sm shadow-amber-200 dark:shadow-amber-900/50 shrink-0">
         <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z" />
         </svg>
@@ -35,7 +35,7 @@ function StatusIcon({ status }: { status: string }) {
   }
   if (status === 'postponed') {
     return (
-      <div className="w-6 h-6 rounded-full bg-purple-400 flex items-center justify-center shadow-sm shadow-purple-200 shrink-0">
+      <div className="w-6 h-6 rounded-full bg-purple-400 flex items-center justify-center shadow-sm shadow-purple-200 dark:shadow-purple-900/50 shrink-0">
         <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
         </svg>
@@ -54,9 +54,9 @@ function StatusIcon({ status }: { status: string }) {
 }
 
 const priorityConfig = {
-  high: { badge: 'bg-red-50 text-red-600' },
-  medium: { badge: 'bg-amber-50 text-amber-600' },
-  low: { badge: 'bg-emerald-50 text-emerald-600' },
+  high: { badge: 'bg-red-50 text-red-600 dark:bg-red-900/50 dark:text-red-300' },
+  medium: { badge: 'bg-amber-50 text-amber-600 dark:bg-amber-900/50 dark:text-amber-300' },
+  low: { badge: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-300' },
 };
 
 export default function HistoryPage() {
@@ -155,7 +155,7 @@ export default function HistoryPage() {
     <div className="space-y-6 animate-in stagger-1">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Task History</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Task History</h1>
           <p className="text-muted-foreground mt-1">All tasks grouped by date</p>
         </div>
         <Button
@@ -192,9 +192,9 @@ export default function HistoryPage() {
             return (
               <div key={date} className="animate-in stagger-2">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
                   <div className="flex items-center gap-3 shrink-0">
-                    <h2 className="text-base font-semibold text-gray-800">{formatGroupDate(date)}</h2>
+                    <h2 className="text-base font-semibold text-foreground">{formatGroupDate(date)}</h2>
                     <span className="text-xs text-muted-foreground bg-secondary px-2.5 py-0.5 rounded-full">
                       {completedCount}/{dateTasks.length} done
                     </span>
@@ -204,7 +204,7 @@ export default function HistoryPage() {
                       </span>
                     )}
                   </div>
-                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
                 </div>
 
                 <div className="space-y-2.5">
@@ -214,12 +214,12 @@ export default function HistoryPage() {
                     return (
                       <Card
                         key={task._id}
-                        className={`transition-all duration-200 hover:shadow-md ${isCompleted ? 'bg-emerald-50/40 border-emerald-200' : ''}`}
+                        className={`transition-all duration-200 hover:shadow-md ${isCompleted ? 'bg-emerald-50/40 border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-800' : ''}`}
                       >
                         <CardContent className="flex items-center gap-3 py-3">
                           <StatusIcon status={task.status} />
                           <div className="flex-1 min-w-0">
-                            <p className={`text-sm font-medium truncate ${isCompleted ? 'text-emerald-700' : 'text-gray-800'}`}>
+                            <p className={`text-sm font-medium truncate ${isCompleted ? 'text-emerald-700 dark:text-emerald-300' : 'text-foreground'}`}>
                               {task.title}
                             </p>
                             <div className="flex flex-wrap gap-2 mt-1">
@@ -232,7 +232,7 @@ export default function HistoryPage() {
                                 {task.priority}
                               </span>
                               {isCompleted && (
-                                <span className="text-[11px] text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full font-medium">
+                                <span className="text-[11px] text-emerald-600 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/50 px-2 py-0.5 rounded-full font-medium">
                                   Completed
                                 </span>
                               )}
@@ -276,7 +276,7 @@ export default function HistoryPage() {
                                   onChange={(e) =>
                                     setPostponeDate((prev) => ({ ...prev, [task._id]: e.target.value }))
                                   }
-                                  className="h-8 w-[120px] rounded-lg border border-gray-200 bg-white px-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  className="h-8 w-[120px] rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                                 <Button
                                   size="sm"

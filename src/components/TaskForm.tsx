@@ -42,7 +42,7 @@ export function TaskForm({ onClose, editTask }: TaskFormProps) {
 
   const { data: projects = [] } = useQuery({
     queryKey: ['projects'],
-    queryFn: getProjects,
+    queryFn: () => getProjects(),
   });
 
   const { data: templates = [] } = useQuery({

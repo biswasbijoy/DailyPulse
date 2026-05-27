@@ -48,7 +48,7 @@ export function FilterBar({ onFilter, showDateFilter }: FilterBarProps) {
     <div className="space-y-3">
       <div className="flex items-center gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -70,7 +70,7 @@ export function FilterBar({ onFilter, showDateFilter }: FilterBarProps) {
       </div>
 
       {open && (
-        <div className="flex flex-wrap gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
+        <div className="flex flex-wrap gap-3 p-4 bg-card rounded-xl border border-border shadow-sm">
           <div className="flex-1 min-w-[140px]">
             <label className="block text-xs font-medium text-muted-foreground mb-1">Priority</label>
             <select

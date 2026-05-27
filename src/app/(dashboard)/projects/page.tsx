@@ -6,7 +6,7 @@ import { getProjects, createProject, updateProject, deleteProject } from '@/serv
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { FolderKanban, Plus, Trash2, Archive, Pencil } from 'lucide-react';
+import { FolderKanban, Plus, Trash2, Archive, Eye, EyeOff } from 'lucide-react';
 import type { Project } from '@/types';
 
 export default function ProjectsPage() {
@@ -16,10 +16,11 @@ export default function ProjectsPage() {
   const [description, setDescription] = useState('');
   const [color, setColor] = useState('#6366f1');
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [showArchived, setShowArchived] = useState(false);
 
   const { data: projects = [], isLoading } = useQuery({
-    queryKey: ['projects'],
-    queryFn: getProjects,
+    queryKey: ['projects', showArchived],
+    queryFn: () => getProjects(showArchived),
   });
 
   const createMutation = useMutation({
@@ -54,14 +55,24 @@ export default function ProjectsPage() {
             <FolderKanban className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
+            <h1 className="text-2xl font-bold text-foreground">Projects</h1>
             <p className="text-sm text-muted-foreground">Organize tasks into projects</p>
           </div>
         </div>
-        <Button variant="gradient" size="sm" onClick={() => setShowForm(!showForm)}>
-          <Plus className="w-4 h-4 mr-1.5" />
-          New Project
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowArchived(!showArchived)}
+          >
+            {showArchived ? <EyeOff className="w-4 h-4 mr-1.5" /> : <Eye className="w-4 h-4 mr-1.5" />}
+            {showArchived ? 'Hide Archived' : 'Show Archived'}
+          </Button>
+          <Button variant="gradient" size="sm" onClick={() => setShowForm(!showForm)}>
+            <Plus className="w-4 h-4 mr-1.5" />
+            New Project
+          </Button>
+        </div>
       </div>
 
       {showForm && (
@@ -84,7 +95,7 @@ export default function ProjectsPage() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={2}
-                  className="flex w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                  className="flex w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring resize-none"
                   placeholder="Optional"
                 />
               </div>
@@ -107,7 +118,7 @@ export default function ProjectsPage() {
         <p className="text-muted-foreground text-center py-8">Loading projects...</p>
       ) : projects.length === 0 ? (
         <div className="text-center py-12">
-          <FolderKanban className="w-12 h-12 mx-auto text-gray-300 mb-3" />
+          <FolderKanban className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
           <p className="text-muted-foreground">No projects yet. Create your first project!</p>
         </div>
       ) : (
@@ -121,7 +132,7 @@ export default function ProjectsPage() {
                     style={{ backgroundColor: project.color || '#6366f1' }}
                   />
                   <div>
-                    <h3 className="font-medium text-gray-900">{project.name}</h3>
+                    <h3 className="font-medium text-foreground">{project.name}</h3>
                     {project.description && (
                       <p className="text-sm text-muted-foreground">{project.description}</p>
                     )}
@@ -133,14 +144,14 @@ export default function ProjectsPage() {
                   )}
                   <button
                     onClick={() => updateMutation.mutate({ id: project._id, data: { archived: !project.archived } })}
-                    className="p-2 text-muted-foreground hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-all"
+                    className="p-2 text-muted-foreground hover:text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-all"
                     title={project.archived ? 'Unarchive' : 'Archive'}
                   >
                     <Archive className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => deleteMutation.mutate(project._id)}
-                    className="p-2 text-muted-foreground hover:text-red-600 rounded-lg hover:bg-red-50 transition-all"
+                    className="p-2 text-muted-foreground hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/50 transition-all"
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4" />
