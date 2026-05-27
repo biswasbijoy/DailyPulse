@@ -6,7 +6,8 @@ import { getProjects, createProject, updateProject, deleteProject } from '@/serv
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { FolderKanban, Plus, Trash2, Archive, Eye, EyeOff } from 'lucide-react';
+import Link from 'next/link';
+import { FolderKanban, Plus, Trash2, Archive, Eye, EyeOff, ChevronRight } from 'lucide-react';
 import type { Project } from '@/types';
 
 export default function ProjectsPage() {
@@ -124,21 +125,22 @@ export default function ProjectsPage() {
       ) : (
         <div className="grid gap-4">
           {projects.map((project: Project) => (
-            <Card key={project._id}>
+            <Card key={project._id} className="hover:shadow-md transition-shadow">
               <CardContent className="flex items-center justify-between py-4">
-                <div className="flex items-center gap-3">
+                <Link href={`/projects/${project._id}`} className="flex items-center gap-3 flex-1 min-w-0">
                   <div
                     className="w-4 h-4 rounded-full flex-shrink-0"
                     style={{ backgroundColor: project.color || '#6366f1' }}
                   />
-                  <div>
-                    <h3 className="font-medium text-foreground">{project.name}</h3>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-foreground truncate">{project.name}</h3>
                     {project.description && (
-                      <p className="text-sm text-muted-foreground">{project.description}</p>
+                      <p className="text-sm text-muted-foreground truncate">{project.description}</p>
                     )}
                   </div>
-                </div>
-                <div className="flex items-center gap-2">
+                  <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                </Link>
+                <div className="flex items-center gap-2 ml-3 shrink-0">
                   {project.archived && (
                     <span className="text-xs text-muted-foreground bg-secondary px-2 py-1 rounded-lg">Archived</span>
                   )}

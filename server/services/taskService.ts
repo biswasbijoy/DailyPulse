@@ -10,6 +10,7 @@ interface CreateTaskData {
   tags?: string[];
   estimatedMinutes?: number;
   taskDate: string;
+  projectId?: string;
   recurrence?: {
     type: RecurrenceType;
     interval?: number;
@@ -28,6 +29,7 @@ interface UpdateTaskData {
   tags?: string[];
   estimatedMinutes?: number;
   actualMinutes?: number;
+  projectId?: string;
   recurrence?: {
     type: RecurrenceType;
     interval?: number;
@@ -46,6 +48,7 @@ interface FilterParams {
   dateTo?: string;
   dueDateFrom?: string;
   dueDateTo?: string;
+  projectId?: string;
 }
 
 export class TaskService {
@@ -65,6 +68,7 @@ export class TaskService {
       dueDate: data.dueDate,
       tags: data.tags || [],
       estimatedMinutes: data.estimatedMinutes,
+      projectId: data.projectId,
       recurrence: recurrence ? { ...recurrence, type: data.recurrence!.type } : { type: 'none', interval: 1, daysOfWeek: [] },
       isRecurrenceInstance: false,
       history: [{ action: 'created', timestamp: new Date() }],
@@ -359,6 +363,7 @@ export class TaskService {
       if (params.dueDateFrom) query.dueDate.$gte = params.dueDateFrom;
       if (params.dueDateTo) query.dueDate.$lte = params.dueDateTo;
     }
+    if (params.projectId) query.projectId = params.projectId;
 
     const tasks = await Task.find(query);
     return this.sortByPriority(tasks);

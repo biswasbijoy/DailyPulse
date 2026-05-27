@@ -12,6 +12,7 @@ import type { CreateTaskInput, UpdateTaskInput, Task, RecurrenceType, Project } 
 interface TaskFormProps {
   onClose: () => void;
   editTask?: Task;
+  defaultProjectId?: string;
 }
 
 const RECURRENCE_LABELS: Record<string, string> = {
@@ -22,7 +23,7 @@ const RECURRENCE_LABELS: Record<string, string> = {
   monthly: 'Monthly',
 };
 
-export function TaskForm({ onClose, editTask }: TaskFormProps) {
+export function TaskForm({ onClose, editTask, defaultProjectId }: TaskFormProps) {
   const queryClient = useQueryClient();
   const [title, setTitle] = useState(editTask?.title || '');
   const [description, setDescription] = useState(editTask?.description || '');
@@ -36,7 +37,7 @@ export function TaskForm({ onClose, editTask }: TaskFormProps) {
   const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>(editTask?.recurrence?.type || 'none');
   const [recurrenceInterval, setRecurrenceInterval] = useState(editTask?.recurrence?.interval?.toString() || '1');
   const [recurrenceEndDate, setRecurrenceEndDate] = useState(editTask?.recurrence?.endDate || '');
-  const [projectId, setProjectId] = useState(editTask?.projectId || '');
+  const [projectId, setProjectId] = useState(defaultProjectId || editTask?.projectId || '');
   const [reminderAt, setReminderAt] = useState(editTask?.reminderAt ? new Date(editTask.reminderAt).toISOString().slice(0, 16) : '');
   const [templateName, setTemplateName] = useState('');
 
@@ -236,19 +237,21 @@ export function TaskForm({ onClose, editTask }: TaskFormProps) {
           </div>
         </div>
       )}
-      <div>
-        <label className="block text-sm font-medium text-foreground mb-1.5">Project</label>
-        <select
-          value={projectId}
-          onChange={(e) => setProjectId(e.target.value)}
-          className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring"
-        >
-          <option value="">No project</option>
-          {projects.map((p: Project) => (
-            <option key={p._id} value={p._id}>{p.name}</option>
-          ))}
-        </select>
-      </div>
+      {!defaultProjectId && (
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-1.5">Project</label>
+          <select
+            value={projectId}
+            onChange={(e) => setProjectId(e.target.value)}
+            className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring"
+          >
+            <option value="">No project</option>
+            {projects.map((p: Project) => (
+              <option key={p._id} value={p._id}>{p.name}</option>
+            ))}
+          </select>
+        </div>
+      )}
       <div>
         <label className="block text-sm font-medium text-foreground mb-1.5">Reminder</label>
         <Input
