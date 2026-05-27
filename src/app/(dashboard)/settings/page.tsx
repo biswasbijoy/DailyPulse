@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/store/authContext';
 import { updateProfile, changePassword, updateSettings } from '@/services/auth';
@@ -24,10 +24,13 @@ export default function SettingsPage() {
   const [settingsMsg, setSettingsMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
-  if (!user) {
-    router.push('/login');
-    return null;
-  }
+  useEffect(() => {
+    if (!user) {
+      router.push('/login');
+    }
+  }, [user, router]);
+
+  if (!user) return null;
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();

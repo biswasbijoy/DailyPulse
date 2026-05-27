@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/store/authContext';
@@ -115,12 +115,13 @@ export default function HistoryPage() {
     },
   });
 
-  if (authLoading) return null;
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, authLoading, router]);
 
-  if (!user) {
-    router.push('/login');
-    return null;
-  }
+  if (authLoading || !user) return null;
 
   const grouped = displayTasks.reduce<Record<string, Task[]>>((acc, task) => {
     const date = task.currentDate;

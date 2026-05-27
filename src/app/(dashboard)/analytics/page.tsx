@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/store/authContext';
@@ -42,12 +42,13 @@ export default function AnalyticsPage() {
     enabled: !!user,
   });
 
-  if (authLoading) return null;
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, authLoading, router]);
 
-  if (!user) {
-    router.push('/login');
-    return null;
-  }
+  if (authLoading || !user) return null;
 
   const summary = data?.summary;
   const dailyBreakdown = data?.dailyBreakdown || [];

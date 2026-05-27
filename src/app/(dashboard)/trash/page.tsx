@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { AlertTriangle, RotateCcw, Trash2 } from 'lucide-react';
@@ -45,11 +45,13 @@ export default function TrashPage() {
     },
   });
 
-  if (authLoading) return null;
-  if (!user) {
-    router.push('/login');
-    return null;
-  }
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading || !user) return null;
 
   return (
     <div className="space-y-6 animate-in stagger-1">
