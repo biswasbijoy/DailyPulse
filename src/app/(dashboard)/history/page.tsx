@@ -72,6 +72,9 @@ export default function HistoryPage() {
 
   const hasActiveFilters = filters.search || filters.priority || filters.status || filters.category || filters.dateFrom || filters.dateTo;
   const todayStr = getLocalDateString();
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
 
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ['tasks', 'history'],
@@ -272,7 +275,7 @@ export default function HistoryPage() {
                               <>
                                 <input
                                   type="date"
-                                  min={todayStr}
+                                  min={minDate}
                                   value={postponeDate[task._id] || ''}
                                   onChange={(e) =>
                                     setPostponeDate((prev) => ({ ...prev, [task._id]: e.target.value }))
