@@ -13,6 +13,7 @@ interface TaskFormProps {
   onClose: () => void;
   editTask?: Task;
   defaultProjectId?: string;
+  defaultDate?: string;
 }
 
 const RECURRENCE_LABELS: Record<string, string> = {
@@ -23,7 +24,7 @@ const RECURRENCE_LABELS: Record<string, string> = {
   monthly: 'Monthly',
 };
 
-export function TaskForm({ onClose, editTask, defaultProjectId }: TaskFormProps) {
+export function TaskForm({ onClose, editTask, defaultProjectId, defaultDate }: TaskFormProps) {
   const queryClient = useQueryClient();
   const [title, setTitle] = useState(editTask?.title || '');
   const [description, setDescription] = useState(editTask?.description || '');
@@ -56,7 +57,7 @@ export function TaskForm({ onClose, editTask, defaultProjectId }: TaskFormProps)
       if (editTask) {
         return updateTask(editTask._id, data);
       }
-      return createTask(data as CreateTaskInput);
+      return createTask(data as CreateTaskInput, defaultDate);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
