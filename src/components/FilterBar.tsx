@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search, X, Filter } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 export interface FilterValues {
@@ -15,7 +14,7 @@ export interface FilterValues {
 }
 
 interface FilterBarProps {
-  onFilter: (filters: FilterValues) => void;
+  onFilter: (filters: Partial<FilterValues>) => void;
   showDateFilter?: boolean;
 }
 
@@ -27,12 +26,33 @@ export function FilterBar({ onFilter, showDateFilter }: FilterBarProps) {
   const [category, setCategory] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    debounceRef.current = setTimeout(() => {
+      onFilter({ search });
+    }, 300);
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, [search]);
 
   const handleApply = () => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
     onFilter({ search, priority, status, category, dateFrom, dateTo });
   };
 
   const handleClear = () => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
     setSearch('');
     setPriority('');
     setStatus('');
@@ -52,7 +72,6 @@ export function FilterBar({ onFilter, showDateFilter }: FilterBarProps) {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleApply()}
             placeholder="Search tasks..."
             className="w-full h-10 pl-9 pr-3 rounded-xl border border-input bg-background text-sm text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring transition-all"
           />
