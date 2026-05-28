@@ -64,6 +64,7 @@ export default function HistoryPage() {
   const queryClient = useQueryClient();
   const { user, isLoading: authLoading } = useAuth();
   const [postponeDate, setPostponeDate] = useState<Record<string, string>>({});
+  const [postponeError, setPostponeError] = useState<string | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [exporting, setExporting] = useState(false);
   const [filters, setFilters] = useState<FilterValues>({
@@ -72,6 +73,9 @@ export default function HistoryPage() {
 
   const hasActiveFilters = filters.search || filters.priority || filters.status || filters.category || filters.dateFrom || filters.dateTo;
   const todayStr = getLocalDateString();
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
 
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ['tasks', 'history'],
@@ -104,6 +108,10 @@ export default function HistoryPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks', 'history'] });
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+    },
+    onError: (err: any) => {
+      setPostponeError(err.response?.data?.message || 'Failed to reschedule task');
+      setTimeout(() => setPostponeError(null), 4000);
     },
   });
 
@@ -169,6 +177,15 @@ export default function HistoryPage() {
       </div>
 
       <FilterBar onFilter={handleFilter} showDateFilter />
+
+      {postponeError && (
+        <div className="bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 text-sm px-4 py-2.5 rounded-xl border border-red-200 dark:border-red-900 flex items-center gap-2">
+          <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {postponeError}
+        </div>
+      )}
 
       {loading ? (
         <div className="text-muted-foreground text-sm">Loading history...</div>
@@ -272,7 +289,7 @@ export default function HistoryPage() {
                               <>
                                 <input
                                   type="date"
-                                  min={todayStr}
+                                  min={minDate}
                                   value={postponeDate[task._id] || ''}
                                   onChange={(e) =>
                                     setPostponeDate((prev) => ({ ...prev, [task._id]: e.target.value }))

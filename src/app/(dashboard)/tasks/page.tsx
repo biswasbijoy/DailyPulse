@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/store/authContext';
-import { getTodayTasks, getPostponedTasks } from '@/services/tasks';
+import { getTodayTasks, getPostponedTasks, getPendingTasks } from '@/services/tasks';
 import { TaskForm } from '@/components/TaskForm';
 import { TaskList } from '@/components/TaskList';
 import { TaskDetails } from '@/components/TaskDetails';
@@ -54,6 +54,17 @@ export default function TasksPage() {
     queryFn: getPostponedTasks,
     enabled: !!user,
   });
+
+  const { data: pendingTasks = [], isLoading: pendingLoading } = useQuery({
+    queryKey: ['tasks', 'pending'],
+    queryFn: getPendingTasks,
+    enabled: !!user,
+  });
+
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const pastPendingTasks = useMemo(() => {
+    return pendingTasks.filter((t) => t.currentDate < todayStr);
+  }, [pendingTasks, todayStr]);
 
   const displayTasks = useMemo(() => {
     if (!hasActiveFilters) return tasks;
@@ -139,6 +150,23 @@ export default function TasksPage() {
               <TaskList tasks={displayTasks} onEdit={handleEdit} onViewDetails={handleViewDetails} showCheckbox />
             </CardContent>
           </Card>
+
+          {!hasActiveFilters && (pendingLoading ? (
+            <div className="text-muted-foreground text-sm">Loading...</div>
+          ) : pastPendingTasks.length > 0 ? (
+            <Card className="border-gray-200 dark:border-gray-700">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-muted-foreground">
+                  <span className="w-5 h-5 rounded-md bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center text-white text-[10px]">⏳</span>
+                  Pending Tasks
+                  <span className="ml-auto text-sm font-normal text-muted-foreground">{pastPendingTasks.length} task{pastPendingTasks.length !== 1 ? 's' : ''}</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <TaskList tasks={pastPendingTasks} onEdit={handleEdit} onViewDetails={handleViewDetails} showCheckbox />
+              </CardContent>
+            </Card>
+          ) : null)}
 
           {!hasActiveFilters && (postponedLoading ? (
             <div className="text-muted-foreground text-sm">Loading...</div>

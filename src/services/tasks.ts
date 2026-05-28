@@ -93,6 +93,11 @@ export async function getPostponedTasks(): Promise<Task[]> {
   return res.data.data;
 }
 
+export async function getPendingTasks(): Promise<Task[]> {
+  const res = await api.get('/tasks/filter', { params: { status: 'pending' } });
+  return res.data.data;
+}
+
 export async function getTaskHistory(): Promise<Task[]> {
   const res = await api.get('/tasks/history');
   return res.data.data;

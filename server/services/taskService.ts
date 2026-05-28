@@ -260,6 +260,11 @@ export class TaskService {
   async postpone(userId: string, taskId: string, newDate: string): Promise<ITask> {
     const task = await this.getById(userId, taskId);
 
+    const today = new Date().toISOString().split('T')[0];
+    if (newDate <= today) {
+      throw new AppError('Can only reschedule to a future date', 400);
+    }
+
     const oldDate = task.currentDate;
     task.currentDate = newDate;
     task.status = 'postponed';
