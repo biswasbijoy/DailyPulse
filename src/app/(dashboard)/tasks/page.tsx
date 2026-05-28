@@ -78,6 +78,7 @@ export default function TasksPage() {
   const handleViewDetails = (task: Task) => setSelectedTask(task);
 
   return (
+    <>
     <div className="space-y-6 animate-in stagger-1">
       <div className="flex items-center justify-between">
         <div>
@@ -150,7 +151,8 @@ export default function TasksPage() {
           ) : null)}
         </>
       )}
+      </div>
       <TaskDetails task={selectedTask} onClose={() => setSelectedTask(null)} />
-    </div>
+    </>
   );
 }

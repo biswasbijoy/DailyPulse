@@ -1,7 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { Task } from '@/types';
-import { Button } from '@/components/ui/button';
 
 interface TaskDetailsProps {
   task: Task | null;
@@ -22,6 +23,12 @@ const priorityColors: Record<string, string> = {
 };
 
 export function TaskDetails({ task, onClose }: TaskDetailsProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   if (!task) return null;
 
   const formatDate = (d: string | Date | undefined) => {
@@ -32,10 +39,12 @@ export function TaskDetails({ task, onClose }: TaskDetailsProps) {
     });
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+  if (!mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[100] overflow-y-auto p-4 sm:p-6">
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative z-50 w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-2xl bg-card border border-border shadow-2xl shadow-black/10 p-6">
+      <div className="relative z-[101] mx-auto my-4 w-full max-w-lg max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-2xl bg-card border border-border shadow-2xl shadow-black/10 p-6 sm:my-8 sm:max-h-[calc(100dvh-4rem)]">
         <div className="flex items-start justify-between mb-5">
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-semibold text-foreground truncate">{task.title}</h3>
@@ -120,7 +129,8 @@ export function TaskDetails({ task, onClose }: TaskDetailsProps) {
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
