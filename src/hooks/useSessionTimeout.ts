@@ -4,8 +4,9 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '@/store/authContext';
 import api from '@/services/api';
 
-const WARNING_AFTER = 25 * 60 * 1000;
 const COUNTDOWN_DURATION = 5 * 60 * 1000;
+const SESSION_TIMEOUT_MS = (parseInt(process.env.NEXT_PUBLIC_SESSION_TIMEOUT_MINUTES || '30', 10)) * 60 * 1000;
+const WARNING_AFTER = Math.max(0, SESSION_TIMEOUT_MS - COUNTDOWN_DURATION);
 
 export function useSessionTimeout() {
   const { user, logout } = useAuth();
