@@ -99,7 +99,7 @@ export default function CalendarPage() {
         <p className="text-muted-foreground mt-1">View and manage tasks by date</p>
       </div>
 
-      <div className="grid lg:grid-cols-[1fr_380px] gap-6">
+      <div className="grid md:grid-cols-[1fr_300px] lg:grid-cols-[1fr_380px] gap-6">
         <Card>
           <CardContent className="p-5">
             <div className="flex items-center justify-between mb-5">
@@ -114,7 +114,8 @@ export default function CalendarPage() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-7 gap-px bg-secondary rounded-lg overflow-hidden">
+            <div className="overflow-x-auto -mx-1 px-1">
+              <div className="grid grid-cols-7 gap-px bg-secondary rounded-lg min-w-[560px]">
               {DAYS.map((d) => (
                 <div key={d} className="bg-muted/50 px-2 py-2 text-center text-xs font-semibold text-muted-foreground">
                   {d}
@@ -165,6 +166,7 @@ export default function CalendarPage() {
                   </button>
                 );
               })}
+            </div>
             </div>
           </CardContent>
         </Card>

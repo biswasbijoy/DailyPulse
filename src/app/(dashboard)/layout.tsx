@@ -33,42 +33,43 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         'fixed inset-y-0 left-0 z-50 w-64 bg-card/80 backdrop-blur-xl border-r shadow-sm transform transition-transform duration-300 lg:relative lg:translate-x-0',
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       )}>
-        <div className="flex h-16 items-center border-b px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <img src="/dailypulse.png" alt="DailyPulse" className="w-8 h-8 rounded-xl shadow-md shadow-blue-200" />
-            <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              DailyPulse
-            </span>
-          </Link>
-        </div>
+        <div className="flex flex-col h-full">
+          <div className="shrink-0 flex h-16 items-center border-b px-6">
+            <Link href="/" className="flex items-center gap-2">
+              <img src="/dailypulse.png" alt="DailyPulse" className="w-8 h-8 rounded-xl shadow-md shadow-blue-200" />
+              <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                DailyPulse
+              </span>
+            </Link>
+          </div>
 
-        <nav className="space-y-1 p-4 mt-2">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200',
-                  isActive
-                    ? 'bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 shadow-sm dark:from-blue-950/50 dark:to-indigo-950/50 dark:text-blue-400'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                )}
-              >
-                <span className={cn(
-                  'w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-200',
-                  isActive ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-sm' : 'bg-secondary text-muted-foreground'
-                )}>
-                  <item.icon className="w-3.5 h-3.5" />
-                </span>
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+          <nav className="flex-1 overflow-y-auto space-y-1 p-4">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    'flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200',
+                    isActive
+                      ? 'bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 shadow-sm dark:from-blue-950/50 dark:to-indigo-950/50 dark:text-blue-400'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                  )}
+                >
+                  <span className={cn(
+                    'w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-200',
+                    isActive ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-sm' : 'bg-secondary text-muted-foreground'
+                  )}>
+                    <item.icon className="w-3.5 h-3.5" />
+                  </span>
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 border-t bg-card/50 backdrop-blur-xl p-4">
+          <div className="shrink-0 border-t bg-card/50 backdrop-blur-xl p-4">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold shadow-sm">
               {user?.name?.charAt(0)?.toUpperCase() || 'U'}
@@ -81,6 +82,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <Button variant="outline" size="sm" className="w-full text-xs" onClick={logout}>
             Sign out
           </Button>
+        </div>
         </div>
       </aside>
 

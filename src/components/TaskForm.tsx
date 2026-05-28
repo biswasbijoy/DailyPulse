@@ -148,7 +148,7 @@ export function TaskForm({ onClose, editTask, defaultProjectId, defaultDate }: T
           className="flex w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring transition-all resize-none"
         />
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-foreground mb-1.5">Priority</label>
           <select
@@ -170,7 +170,7 @@ export function TaskForm({ onClose, editTask, defaultProjectId, defaultDate }: T
           />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-foreground mb-1.5">Due Date</label>
           <Input
@@ -200,7 +200,7 @@ export function TaskForm({ onClose, editTask, defaultProjectId, defaultDate }: T
       </div>
       <div>
         <label className="block text-sm font-medium text-foreground mb-1.5">Repeat</label>
-        <div className="grid grid-cols-5 gap-2">
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
           {['none', 'daily', 'weekdays', 'weekly', 'monthly'].map((r) => (
             <button
               key={r}
@@ -218,7 +218,7 @@ export function TaskForm({ onClose, editTask, defaultProjectId, defaultDate }: T
         </div>
       </div>
       {recurrenceType !== 'none' && (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-foreground mb-1.5">Every</label>
             <Input
@@ -280,7 +280,7 @@ export function TaskForm({ onClose, editTask, defaultProjectId, defaultDate }: T
       </div>
       <div>
         <label className="block text-sm font-medium text-foreground mb-1.5">Save as Template</label>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Input
             value={templateName}
             onChange={(e) => setTemplateName(e.target.value)}
@@ -297,7 +297,7 @@ export function TaskForm({ onClose, editTask, defaultProjectId, defaultDate }: T
           </Button>
         </div>
       </div>
-      <div className="flex gap-2 pt-2">
+      <div className="flex flex-col sm:flex-row gap-2 pt-2">
         <Button type="submit" variant="gradient" disabled={mutation.isPending}>
           {mutation.isPending ? 'Saving...' : editTask ? 'Update Task' : 'Add Task'}
         </Button>

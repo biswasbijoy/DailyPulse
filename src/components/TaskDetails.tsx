@@ -74,7 +74,7 @@ export function TaskDetails({ task, onClose }: TaskDetailsProps) {
           <p className="text-sm text-muted-foreground mb-5 bg-muted rounded-xl p-3">{task.description}</p>
         )}
 
-        <div className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm mb-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm mb-5">
           <DetailItem label="Original Date" value={task.taskDate} />
           <DetailItem label="Current Date" value={task.currentDate} />
           <DetailItem label="Due Date" value={task.dueDate || '—'} />

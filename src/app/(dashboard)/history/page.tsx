@@ -234,7 +234,7 @@ export default function HistoryPage() {
                         key={task._id}
                         className={`transition-all duration-200 hover:shadow-md ${isCompleted ? 'bg-emerald-50/40 border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-800' : ''}`}
                       >
-                        <CardContent className="flex items-center gap-3 py-3">
+                        <CardContent className="flex flex-col sm:flex-row sm:items-center gap-3 py-3">
                           <StatusIcon status={task.status} />
                           <div className="flex-1 min-w-0">
                             <p className={`text-sm font-medium truncate ${isCompleted ? 'text-emerald-700 dark:text-emerald-300' : 'text-foreground'}`}>
@@ -267,7 +267,7 @@ export default function HistoryPage() {
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-1.5 shrink-0">
+                          <div className="flex flex-wrap items-center gap-1.5 sm:shrink-0">
                             <Button
                               size="sm"
                               variant="ghost"
@@ -294,7 +294,7 @@ export default function HistoryPage() {
                                   onChange={(e) =>
                                     setPostponeDate((prev) => ({ ...prev, [task._id]: e.target.value }))
                                   }
-                                  className="h-8 w-[120px] rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  className="h-8 w-full sm:w-[120px] rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                                 <Button
                                   size="sm"

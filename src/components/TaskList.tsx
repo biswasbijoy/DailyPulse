@@ -133,7 +133,7 @@ export function TaskList({ tasks, onEdit, onViewDetails, showRevert, showCheckbo
             key={task._id}
             className={`transition-all duration-200 hover:shadow-md ${isCompleted ? 'bg-emerald-50/40 border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-800' : ''}`}
           >
-            <CardContent className="flex items-center gap-3 py-3.5">
+            <CardContent className="flex flex-col sm:flex-row sm:items-center gap-3 py-3.5">
               {showCheckbox ? (
                 <label className="relative flex items-center cursor-pointer shrink-0">
                   <input
@@ -209,7 +209,7 @@ export function TaskList({ tasks, onEdit, onViewDetails, showRevert, showCheckbo
                 </div>
               </div>
 
-              <div className="flex items-center gap-1.5 shrink-0">
+              <div className="flex flex-wrap items-center gap-1.5 sm:shrink-0">
                 {task.status === 'postponed' && showRevert && (
                   <Button
                     size="sm"
@@ -229,7 +229,7 @@ export function TaskList({ tasks, onEdit, onViewDetails, showRevert, showCheckbo
                       onChange={(e) =>
                         setPostponeDate((prev) => ({ ...prev, [task._id]: e.target.value }))
                       }
-                      className="h-8 w-[120px] rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="h-8 w-full sm:w-[120px] rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <Button
                       size="sm"
