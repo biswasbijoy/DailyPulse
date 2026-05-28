@@ -38,9 +38,7 @@ export default function RegisterPage() {
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM5M0NGRUQiIGZpbGwtb3BhY2l0eT0iMC4wOCI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50 dark:opacity-10" />
       <div className="relative w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-blue-200 dark:shadow-blue-900/50 mx-auto mb-4">
-            D
-          </div>
+          <img src="/dailypulse.png" alt="DailyPulse" className="w-14 h-14 rounded-2xl shadow-lg shadow-blue-200 dark:shadow-blue-900/50 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-foreground">Create account</h1>
           <p className="text-muted-foreground mt-1">Get started with DailyPulse</p>
         </div>

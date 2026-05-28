@@ -8,6 +8,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'DailyPulse - Task Tracker',
   description: 'Track your daily tasks and productivity analytics',
+  icons: { icon: '/dailypulse.png' },
 };
 
 export default function RootLayout({
