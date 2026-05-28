@@ -81,7 +81,7 @@ export function useSessionTimeout() {
 
     startTimers();
 
-    const events = ['mousedown', 'keydown', 'mousemove', 'scroll', 'touchstart'];
+    const events = ['click', 'keydown', 'scroll', 'touchstart'];
     const handler = () => resetTimers();
     events.forEach((event) => window.addEventListener(event, handler));
 
