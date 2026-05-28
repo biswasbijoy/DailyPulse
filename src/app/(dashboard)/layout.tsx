@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, ListTodo, History, BarChart3, Calendar, Trash2, FolderKanban, Settings } from 'lucide-react';
 import { useAuth } from '@/store/authContext';
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
+import { SessionTimeoutCard } from '@/components/SessionTimeoutCard';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -22,6 +24,7 @@ const navItems = [
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const { showWarning, countdown, keepAlive } = useSessionTimeout();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -106,6 +109,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
+      )}
+
+      {showWarning && (
+        <SessionTimeoutCard countdown={countdown} onKeepAlive={keepAlive} />
       )}
     </div>
   );
