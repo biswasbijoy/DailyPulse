@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/store/authContext';
-import { getTodayTasks, getPostponedTasks, filterTasks } from '@/services/tasks';
+import { getTodayTasks, getPostponedTasks } from '@/services/tasks';
 import { TaskForm } from '@/components/TaskForm';
 import { TaskList } from '@/components/TaskList';
 import { TaskDetails } from '@/components/TaskDetails';
@@ -13,6 +13,23 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Task } from '@/types';
 import type { FilterValues } from '@/components/FilterBar';
+
+function filterTasksLocal(tasks: Task[], filters: FilterValues): Task[] {
+  return tasks.filter((task) => {
+    if (filters.search) {
+      const term = filters.search.toLowerCase();
+      const matchesSearch =
+        task.title.toLowerCase().includes(term) ||
+        (task.description && task.description.toLowerCase().includes(term)) ||
+        (task.tags && task.tags.some((tag) => tag.toLowerCase().includes(term)));
+      if (!matchesSearch) return false;
+    }
+    if (filters.priority && task.priority !== filters.priority) return false;
+    if (filters.status && task.status !== filters.status) return false;
+    if (filters.category && !task.category?.toLowerCase().includes(filters.category.toLowerCase())) return false;
+    return true;
+  });
+}
 
 export default function TasksPage() {
   const router = useRouter();
@@ -29,20 +46,7 @@ export default function TasksPage() {
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ['tasks', 'today'],
     queryFn: getTodayTasks,
-    enabled: !!user && !hasActiveFilters,
-  });
-
-  const { data: filteredTasks = [], isLoading: filterLoading } = useQuery({
-    queryKey: ['tasks', 'filter', filters],
-    queryFn: () => filterTasks({
-      search: filters.search || undefined,
-      priority: filters.priority || undefined,
-      status: filters.status || undefined,
-      category: filters.category || undefined,
-      dateFrom: filters.dateFrom || undefined,
-      dateTo: filters.dateTo || undefined,
-    }),
-    enabled: !!user && !!hasActiveFilters,
+    enabled: !!user,
   });
 
   const { data: postponedTasks = [], isLoading: postponedLoading } = useQuery({
@@ -51,8 +55,13 @@ export default function TasksPage() {
     enabled: !!user,
   });
 
-  const handleFilter = useCallback((newFilters: FilterValues) => {
-    setFilters(newFilters);
+  const displayTasks = useMemo(() => {
+    if (!hasActiveFilters) return tasks;
+    return filterTasksLocal([...tasks, ...postponedTasks], filters);
+  }, [tasks, postponedTasks, filters, hasActiveFilters]);
+
+  const handleFilter = useCallback((newFilters: Partial<FilterValues>) => {
+    setFilters((prev) => ({ ...prev, ...newFilters }));
   }, []);
 
   useEffect(() => {
@@ -73,8 +82,6 @@ export default function TasksPage() {
     setEditTask(undefined);
   };
 
-  const displayTasks = hasActiveFilters ? filteredTasks : tasks;
-  const loading = hasActiveFilters ? filterLoading : isLoading;
   const handleViewDetails = (task: Task) => setSelectedTask(task);
 
   return (
@@ -116,7 +123,7 @@ export default function TasksPage() {
 
       <FilterBar onFilter={handleFilter} />
 
-      {loading ? (
+      {isLoading ? (
         <div className="text-muted-foreground text-sm">Loading tasks...</div>
       ) : (
         <>

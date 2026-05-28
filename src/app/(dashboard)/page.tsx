@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/store/authContext';
 import { getTodayTasks } from '@/services/tasks';
@@ -110,7 +111,11 @@ export default function DashboardPage() {
           ) : (
             <div className="divide-y divide-border">
               {tasks.slice(0, 5).map((task) => (
-                <div key={task._id} className="flex items-center gap-3 px-5 py-3 hover:bg-accent/50 transition-colors">
+                <Link
+                  key={task._id}
+                  href="/tasks"
+                  className="flex items-center gap-3 px-5 py-3 hover:bg-accent/50 focus-visible:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset transition-colors"
+                >
                   <span className={cn(
                     'w-2 h-2 rounded-full shrink-0',
                     task.status === 'completed' ? 'bg-emerald-400' :
@@ -134,7 +139,7 @@ export default function DashboardPage() {
                   )}>
                     {task.status === 'postponed' ? 'rescheduled' : task.status.replace('_', ' ')}
                   </span>
-                </div>
+                </Link>
               ))}
             </div>
           )}
@@ -143,4 +148,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

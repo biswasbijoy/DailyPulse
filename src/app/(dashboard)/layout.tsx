@@ -35,9 +35,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       )}>
         <div className="flex h-16 items-center border-b px-6">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold shadow-md shadow-blue-200">
-              D
-            </div>
+            <img src="/dailypulse.png" alt="DailyPulse" className="w-8 h-8 rounded-xl shadow-md shadow-blue-200" />
             <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               DailyPulse
             </span>
@@ -97,7 +95,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </svg>
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">D</div>
+            <img src="/dailypulse.png" alt="DailyPulse" className="w-7 h-7 rounded-lg" />
             <span className="font-semibold text-foreground">DailyPulse</span>
           </div>
         </header>

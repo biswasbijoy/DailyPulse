@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { useAuth } from '@/store/authContext';
 import { getTasksByRange } from '@/services/tasks';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { TaskForm } from '@/components/TaskForm';
 import type { Task } from '@/types';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -54,9 +55,11 @@ const priorityDot = {
 export default function CalendarPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
+  const queryClient = useQueryClient();
   const today = new Date();
   const [viewDate, setViewDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
 
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth();
@@ -138,7 +141,11 @@ export default function CalendarPage() {
                       {tasks.slice(0, 3).map((task) => (
                         <div
                           key={task._id}
-                          className={`text-[10px] truncate rounded px-1 py-0.5 ${
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push('/tasks');
+                          }}
+                          className={`text-[10px] truncate rounded px-1 py-0.5 cursor-pointer hover:ring-1 hover:ring-blue-400 ${
                             task.status === 'completed'
                               ? 'bg-emerald-100 text-emerald-700 line-through dark:bg-emerald-900/50 dark:text-emerald-300'
                               : task.status === 'postponed'
@@ -164,58 +171,88 @@ export default function CalendarPage() {
 
         <div className="space-y-4">
           {selectedDate ? (
-            <Card>
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-foreground">
-                    {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      month: 'short',
-                      day: 'numeric',
-                    })}
-                  </h3>
-                  {selectedDate === todayStr && (
-                    <span className="text-xs font-medium bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-300 px-2 py-0.5 rounded-full">
-                      Today
-                    </span>
-                  )}
-                </div>
-
-                {dayLoading ? (
-                  <p className="text-sm text-muted-foreground">Loading...</p>
-                ) : dayTasks.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No tasks for this date.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {dayTasks.map((task) => (
-                      <div
-                        key={task._id}
-                        className={`p-3 rounded-xl border text-sm ${
-                          task.status === 'completed'
-                            ? 'bg-emerald-50 border-emerald-200 dark:bg-emerald-950/50 dark:border-emerald-800'
-                            : task.status === 'postponed'
-                            ? 'bg-purple-50 border-purple-200 dark:bg-purple-950/50 dark:border-purple-800'
-                            : 'bg-muted/50 border-gray-100 dark:border-gray-700'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className={`w-2 h-2 rounded-full shrink-0 ${priorityDot[task.priority] || 'bg-gray-300'}`} />
-                          <p className={`font-medium truncate flex-1 ${task.status === 'completed' ? 'line-through text-emerald-700 dark:text-emerald-300' : 'text-foreground'}`}>
-                            {task.title}
-                          </p>
-                          <span className="text-[10px] text-muted-foreground capitalize">
-                            {task.status === 'postponed' ? 'rescheduled' : task.status.replace('_', ' ')}
-                          </span>
-                        </div>
-                        {task.description && (
-                          <p className="text-xs text-muted-foreground mt-1 ml-4">{task.description}</p>
-                        )}
-                      </div>
-                    ))}
+            <>
+              <Card>
+                <CardContent className="p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-foreground">
+                      {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </h3>
+                    <div className="flex items-center gap-2">
+                      {selectedDate === todayStr && (
+                        <span className="text-xs font-medium bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-300 px-2 py-0.5 rounded-full">
+                          Today
+                        </span>
+                      )}
+                      {selectedDate >= todayStr && (
+                        <Button
+                          variant="gradient"
+                          size="sm"
+                          onClick={() => setShowForm(true)}
+                        >
+                          <Plus className="w-3.5 h-3.5 mr-1" />
+                          Add Task
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                )}
-              </CardContent>
-            </Card>
+
+                  {dayLoading ? (
+                    <p className="text-sm text-muted-foreground">Loading...</p>
+                  ) : dayTasks.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No tasks for this date.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {dayTasks.map((task) => (
+                        <div
+                          key={task._id}
+                          onClick={() => router.push('/tasks')}
+                          className={`p-3 rounded-xl border text-sm cursor-pointer hover:ring-2 hover:ring-blue-400 transition-all ${
+                            task.status === 'completed'
+                              ? 'bg-emerald-50 border-emerald-200 dark:bg-emerald-950/50 dark:border-emerald-800'
+                              : task.status === 'postponed'
+                              ? 'bg-purple-50 border-purple-200 dark:bg-purple-950/50 dark:border-purple-800'
+                              : 'bg-muted/50 border-gray-100 dark:border-gray-700'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className={`w-2 h-2 rounded-full shrink-0 ${priorityDot[task.priority] || 'bg-gray-300'}`} />
+                            <p className={`font-medium truncate flex-1 ${task.status === 'completed' ? 'line-through text-emerald-700 dark:text-emerald-300' : 'text-foreground'}`}>
+                              {task.title}
+                            </p>
+                            <span className="text-[10px] text-muted-foreground capitalize">
+                              {task.status === 'postponed' ? 'rescheduled' : task.status.replace('_', ' ')}
+                            </span>
+                          </div>
+                          {task.description && (
+                            <p className="text-xs text-muted-foreground mt-1 ml-4">{task.description}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {showForm && (
+                <Card>
+                  <CardContent className="p-5">
+                    <TaskForm
+                      onClose={() => {
+                        setShowForm(false);
+                        queryClient.invalidateQueries({ queryKey: ['tasks', 'range'] });
+                        queryClient.invalidateQueries({ queryKey: ['tasks', 'date'] });
+                      }}
+                      defaultDate={selectedDate}
+                    />
+                  </CardContent>
+                </Card>
+              )}
+            </>
           ) : (
             <Card>
               <CardContent className="p-5 text-center text-sm text-muted-foreground">

@@ -92,8 +92,8 @@ export default function HistoryPage() {
     enabled: !!user && !!hasActiveFilters,
   });
 
-  const handleFilter = useCallback((newFilters: FilterValues) => {
-    setFilters(newFilters);
+  const handleFilter = useCallback((newFilters: Partial<FilterValues>) => {
+    setFilters((prev) => ({ ...prev, ...newFilters }));
   }, []);
 
   const displayTasks = hasActiveFilters ? filteredTasks : tasks;

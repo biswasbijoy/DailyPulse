@@ -35,8 +35,8 @@ export async function filterTasks(params: FilterParams): Promise<Task[]> {
   return res.data.data;
 }
 
-export async function createTask(data: CreateTaskInput): Promise<Task> {
-  const res = await api.post('/tasks', { ...data, taskDate: getLocalDateString() });
+export async function createTask(data: CreateTaskInput, taskDate?: string): Promise<Task> {
+  const res = await api.post('/tasks', { ...data, taskDate: taskDate || getLocalDateString() });
   return res.data.data;
 }
 
