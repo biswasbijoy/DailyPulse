@@ -15,7 +15,7 @@ export async function logoutUser(): Promise<void> {
   await api.post('/auth/logout');
 }
 
-export async function updateProfile(data: { name?: string; timezone?: string }): Promise<AuthResponse> {
+export async function updateProfile(data: { name?: string; timezone?: string; profilePicture?: string | null }): Promise<AuthResponse> {
   const res = await api.put('/auth/profile', data);
   return res.data.data;
 }

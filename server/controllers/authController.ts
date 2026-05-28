@@ -37,6 +37,7 @@ function sanitizeUser(user: any) {
     name: user.name,
     email: user.email,
     timezone: user.timezone,
+    profilePicture: user.profilePicture,
     settings: user.settings,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
@@ -103,6 +104,7 @@ export const updateProfile = asyncHandler(async (req: AuthRequest, res: Response
 
   if (req.body.name) user.name = req.body.name;
   if (req.body.timezone) user.timezone = req.body.timezone;
+  if (req.body.profilePicture !== undefined) user.profilePicture = req.body.profilePicture;
   await user.save();
 
   return sendSuccess(res, { user: sanitizeUser(user) }, 'Profile updated');

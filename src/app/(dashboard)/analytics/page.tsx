@@ -261,7 +261,7 @@ export default function AnalyticsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="text-center p-4 rounded-xl bg-muted/50">
                     <p className="text-2xl font-bold text-foreground">{data.estimationAccuracy.total}</p>
                     <p className="text-xs text-muted-foreground mt-1">Tracked Tasks</p>
