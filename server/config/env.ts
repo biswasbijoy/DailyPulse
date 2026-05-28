@@ -15,7 +15,7 @@ export const env = {
   port: parseInt(process.env.PORT || '5000', 10),
   mongoUri: process.env.MONGODB_URI || 'mongodb://localhost:27017/dailypulse',
   jwtSecret: process.env.NODE_ENV === 'production' ? required('JWT_SECRET') : (process.env.JWT_SECRET || 'fallback-secret-do-not-use-in-production'),
-  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '6m',
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '30m',
   refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '7d',
   refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET || (process.env.JWT_SECRET ? process.env.JWT_SECRET + '-refresh' : 'fallback-refresh-secret'),
   nodeEnv: process.env.NODE_ENV || 'development',
