@@ -9,6 +9,7 @@ export interface IUser extends Document {
   email: string;
   passwordHash: string;
   timezone: string;
+  profilePicture?: string;
   settings: IUserSettings;
   createdAt: Date;
   updatedAt: Date;
@@ -27,6 +28,7 @@ const userSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     passwordHash: { type: String, required: true },
     timezone: { type: String, default: 'UTC' },
+    profilePicture: { type: String },
     settings: { type: userSettingsSchema, default: () => ({ theme: 'system' }) },
   },
   { timestamps: true }

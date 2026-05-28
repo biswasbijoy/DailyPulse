@@ -106,6 +106,7 @@ export const updateTemplateSchema = z.object({
 export const updateProfileSchema = z.object({
   name: z.string().min(2).max(50).optional(),
   timezone: z.string().optional(),
+  profilePicture: z.string().max(500000).optional().nullable(),
 });
 
 export const changePasswordSchema = z.object({

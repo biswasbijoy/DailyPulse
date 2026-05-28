@@ -113,6 +113,7 @@ export interface User {
   name: string;
   email: string;
   timezone: string;
+  profilePicture?: string;
   settings: UserSettings;
   createdAt: string;
   updatedAt: string;

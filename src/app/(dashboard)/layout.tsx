@@ -71,8 +71,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
           <div className="shrink-0 border-t bg-card/50 backdrop-blur-xl p-4">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold shadow-sm">
-              {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold shadow-sm overflow-hidden shrink-0">
+              {user?.profilePicture ? (
+                <img src={user.profilePicture} alt="" className="w-full h-full object-cover" />
+              ) : (
+                user?.name?.charAt(0)?.toUpperCase() || 'U'
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-foreground truncate">{user?.name}</p>

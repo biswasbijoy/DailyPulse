@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/store/authContext';
 import { updateProfile, changePassword, updateSettings } from '@/services/auth';
@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { applyTheme } from '@/lib/theme';
-import { Settings, User, Lock, Palette, Save } from 'lucide-react';
+import { Settings, User, Lock, Palette, Save, Camera, Trash2 } from 'lucide-react';
 
 export default function SettingsPage() {
   const { user, refreshUser } = useAuth();
@@ -23,6 +23,9 @@ export default function SettingsPage() {
   const [passwordMsg, setPasswordMsg] = useState('');
   const [settingsMsg, setSettingsMsg] = useState('');
   const [loading, setLoading] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [profilePicturePreview, setProfilePicturePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!user) {
@@ -37,7 +40,7 @@ export default function SettingsPage() {
     setLoading(true);
     setProfileMsg('');
     try {
-      await updateProfile({ name, timezone });
+      await updateProfile({ name, timezone, profilePicture });
       await refreshUser();
       setProfileMsg('Profile updated successfully');
     } catch {
@@ -61,6 +64,30 @@ export default function SettingsPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      setProfileMsg('Image must be under 2MB');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      setProfilePicturePreview(dataUrl);
+      setProfilePicture(dataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemovePicture = () => {
+    setProfilePicturePreview(null);
+    setProfilePicture(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleSettingsUpdate = async (e: React.FormEvent) => {
@@ -101,6 +128,61 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleProfileUpdate} className="space-y-4">
+            <div className="flex items-center gap-4">
+              <div className="relative shrink-0">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-xl font-bold shadow-sm overflow-hidden">
+                  {profilePicturePreview || user.profilePicture ? (
+                    <img
+                      src={profilePicturePreview || user.profilePicture}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    user?.name?.charAt(0)?.toUpperCase() || 'U'
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-md hover:bg-blue-700 transition-colors"
+                >
+                  <Camera className="w-3.5 h-3.5" />
+                </button>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <p className="text-sm font-medium text-foreground">Profile Picture</p>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Camera className="w-3.5 h-3.5 mr-1" />
+                    {user.profilePicture ? 'Change' : 'Upload'}
+                  </Button>
+                  {(profilePicturePreview || user.profilePicture) && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleRemovePicture}
+                      className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 mr-1" />
+                      Remove
+                    </Button>
+                  )}
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+              </div>
+            </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">Name</label>
               <Input value={name} onChange={(e) => setName(e.target.value)} required />
