@@ -65,6 +65,7 @@ export function TaskList({ tasks, onEdit, onViewDetails, showRevert, showCheckbo
   const queryClient = useQueryClient();
   const [postponeDate, setPostponeDate] = useState<Record<string, string>>({});
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; title: string } | null>(null);
+  const [postponeError, setPostponeError] = useState<string | null>(null);
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const minDate = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
@@ -87,6 +88,10 @@ export function TaskList({ tasks, onEdit, onViewDetails, showRevert, showCheckbo
   const postponeMutation = useMutation({
     mutationFn: ({ id, date }: { id: string; date: string }) => postponeTask(id, date),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+    onError: (err: any) => {
+      setPostponeError(err.response?.data?.message || 'Failed to reschedule task');
+      setTimeout(() => setPostponeError(null), 4000);
+    },
   });
 
   const revertMutation = useMutation({
@@ -112,6 +117,14 @@ export function TaskList({ tasks, onEdit, onViewDetails, showRevert, showCheckbo
 
   return (
     <div className="space-y-3">
+      {postponeError && (
+        <div className="bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 text-sm px-4 py-2.5 rounded-xl border border-red-200 dark:border-red-900 flex items-center gap-2">
+          <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {postponeError}
+        </div>
+      )}
       {tasks.map((task) => {
         const config = priorityConfig[task.priority] || priorityConfig.low;
         const isCompleted = task.status === 'completed';
