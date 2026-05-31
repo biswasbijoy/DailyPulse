@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/store/authContext';
 import { getTaskHistory, postponeTask, revertPostponeTask, filterTasks } from '@/services/tasks';
 import { getLocalDateString } from '@/lib/utils';
-import { exportTasksToExcel } from '@/lib/exportToExcel';
 import { FilterBar } from '@/components/FilterBar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -143,6 +142,7 @@ export default function HistoryPage() {
   const handleExport = async () => {
     setExporting(true);
     try {
+      const { exportTasksToExcel } = await import('@/lib/exportToExcel');
       await exportTasksToExcel(displayTasks);
     } catch (err) {
       console.error('Export failed:', err);
