@@ -16,8 +16,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href={apiUrl} />
+        <link rel="dns-prefetch" href={apiUrl} />
+      </head>
       <body className={inter.className} suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>

@@ -2,6 +2,7 @@
 
 import { ReactNode, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, ListTodo, History, BarChart3, Calendar, Trash2, FolderKanban, Settings } from 'lucide-react';
 import { useAuth } from '@/store/authContext';
@@ -36,7 +37,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <div className="flex flex-col h-full">
           <div className="shrink-0 flex h-16 items-center border-b px-6">
             <Link href="/" className="flex items-center gap-2">
-              <img src="/dailypulse.png" alt="DailyPulse" className="w-8 h-8 rounded-xl shadow-md shadow-blue-200" />
+              <Image src="/dailypulse.png" alt="DailyPulse" width={32} height={32} className="rounded-xl shadow-md shadow-blue-200" />
               <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                 DailyPulse
               </span>
@@ -101,7 +102,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </svg>
           </button>
           <div className="flex items-center gap-2">
-            <img src="/dailypulse.png" alt="DailyPulse" className="w-7 h-7 rounded-lg" />
+            <Image src="/dailypulse.png" alt="DailyPulse" width={28} height={28} className="rounded-lg" />
             <span className="font-semibold text-foreground">DailyPulse</span>
           </div>
         </header>
